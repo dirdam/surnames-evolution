@@ -342,6 +342,7 @@
         #chartSvg .area {
             stroke: var(--surface-1);
             stroke-width: 2;
+            transition: opacity 0.15s ease;
         }
 
         #chartSvg .crosshair {
@@ -349,6 +350,13 @@
             stroke-width: 1;
             stroke-dasharray: 3 3;
             display: none;
+        }
+
+        #chartSvg .century-line {
+            stroke: var(--ink-muted);
+            stroke-width: 1;
+            stroke-dasharray: 4 4;
+            opacity: 0.5;
         }
 
         #chartSvg .direct-label {
@@ -488,6 +496,10 @@
 
         .legend-list li:nth-child(odd) {
             background: rgba(0, 0, 0, 0.03);
+        }
+
+        .legend-list li[data-surname]:hover {
+            background: rgba(0, 0, 0, 0.08);
         }
 
         .legend-swatch {
@@ -954,6 +966,17 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             return s;
         }
 
+        // Locale-aware decimal formatting (e.g. "1.09" in English, "1,09" in
+        // Spanish) — every number with a fractional part shown in the UI
+        // should go through this rather than a raw template-literal join.
+        const NUMBER_LOCALE = { en: 'en-US', es: 'es-ES', ja: 'ja-JP' };
+        function formatDecimal(n, maxFractionDigits) {
+            return new Intl.NumberFormat(NUMBER_LOCALE[currentLang] || 'en-US', {
+                maximumFractionDigits: maxFractionDigits,
+                minimumFractionDigits: 0,
+            }).format(n);
+        }
+
         function applyStaticDict() {
             document.querySelectorAll('[data-i18n-html]').forEach((el) => {
                 el.innerHTML = t(el.getAttribute('data-i18n-html'));
@@ -1276,9 +1299,23 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         const hudPopulation = document.getElementById('hudPopulation');
         const hudChildren = document.getElementById('hudChildren');
         const VIEW_W = 1000, VIEW_H = 360;
+        const CENTURY_YEARS = 100;
+
+        // Hover-focus state: the currently spotlighted surname (or null for
+        // none). Re-applied at the end of every renderChart() too, since the
+        // chart's <path> elements are rebuilt from scratch each tick and
+        // would otherwise lose their dimmed/focused opacity while playing.
+        let currentHighlight = null;
+        let lastCumulative = [];
 
         function surnameLabel(surname) {
             return surname;
+        }
+
+        function applyHighlight(surname) {
+            svg.querySelectorAll('.area').forEach((path) => {
+                path.style.opacity = surname ? (path.dataset.surname === surname ? '1' : '0.2') : '';
+            });
         }
 
         function renderChart() {
@@ -1303,6 +1340,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 bounds.push([acc, acc + frame.other]);
                 return bounds;
             });
+            lastCumulative = cumulative;
 
             const ns = 'http://www.w3.org/2000/svg';
             for (let s = 0; s < seriesCount; s++) {
@@ -1323,7 +1361,33 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 path.setAttribute('d', d);
                 path.setAttribute('fill', color);
                 path.setAttribute('class', 'area');
+                if (s < slots.length) path.dataset.surname = slots[s];
                 svg.appendChild(path);
+            }
+
+            // Century gridlines, so the passing of time is easy to track.
+            // Interpolated between the two nearest frames rather than
+            // requiring an exact frame.year match, since long runs thin out
+            // chartHistory (keeping only every 2nd/4th entry) and an exact
+            // century year can end up dropped from the array.
+            for (let year = CENTURY_YEARS; year <= history[n - 1].year; year += CENTURY_YEARS) {
+                let idx = history.findIndex((f) => f.year >= year);
+                if (idx === -1) continue;
+                let x;
+                if (idx === 0 || history[idx].year === year) {
+                    x = idx * xStep;
+                } else {
+                    const prevYear = history[idx - 1].year;
+                    const frac = (year - prevYear) / (history[idx].year - prevYear);
+                    x = (idx - 1 + frac) * xStep;
+                }
+                const line = document.createElementNS(ns, 'line');
+                line.setAttribute('class', 'century-line');
+                line.setAttribute('x1', x);
+                line.setAttribute('x2', x);
+                line.setAttribute('y1', 0);
+                line.setAttribute('y2', VIEW_H);
+                svg.appendChild(line);
             }
 
             // Direct labels for the top 4 locked slots, at the rightmost edge.
@@ -1352,12 +1416,13 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
 
             renderHud();
             renderLegend(lastBounds, slots);
+            applyHighlight(currentHighlight);
         }
 
         function renderHud() {
             hudYear.textContent = sim.year;
             hudPopulation.textContent = sim.size;
-            hudChildren.textContent = sim.getChildrenAverage();
+            hudChildren.textContent = formatDecimal(sim.getChildrenAverage(), 2);
         }
 
         function renderLegend(lastBounds, slots) {
@@ -1384,10 +1449,15 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 name.textContent = isOther ? t('legendOtherLabel') : surnameLabel(surname);
                 const pct = document.createElement('span');
                 pct.className = 'legend-pct';
-                pct.textContent = Math.round(share * 1000) / 10 + '%';
+                pct.textContent = formatDecimal(Math.round(share * 1000) / 10, 1) + '%';
                 li.appendChild(swatch);
                 li.appendChild(name);
                 li.appendChild(pct);
+                if (!isOther) {
+                    li.dataset.surname = surname;
+                    li.addEventListener('mouseenter', () => { currentHighlight = surname; applyHighlight(surname); });
+                    li.addEventListener('mouseleave', () => { currentHighlight = null; applyHighlight(null); });
+                }
                 legendList.appendChild(li);
             };
 
@@ -1419,9 +1489,9 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             html += '<div><strong>' + t('tableColPopulation') + ':</strong> ' + frame.population + '</div>';
             slots.forEach((surname, i) => {
                 const pct = Math.round((frame.shares[surname] || 0) * 1000) / 10;
-                html += '<div class="row"><span class="swatch" style="background:' + slotColor(i) + '"></span>' + surnameLabel(surname) + ': ' + pct + '%</div>';
+                html += '<div class="row"><span class="swatch" style="background:' + slotColor(i) + '"></span>' + surnameLabel(surname) + ': ' + formatDecimal(pct, 1) + '%</div>';
             });
-            html += '<div class="row"><span class="swatch" style="background:' + otherColor() + '"></span>' + t('legendOtherLabel') + ': ' + (Math.round(frame.other * 1000) / 10) + '%</div>';
+            html += '<div class="row"><span class="swatch" style="background:' + otherColor() + '"></span>' + t('legendOtherLabel') + ': ' + formatDecimal(Math.round(frame.other * 1000) / 10, 1) + '%</div>';
             tooltip.innerHTML = html;
             tooltip.style.display = 'block';
             const tw = tooltip.offsetWidth;
@@ -1429,11 +1499,26 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             if (left + tw > rect.width) left = event.clientX - rect.left - tw - 12;
             tooltip.style.left = left + 'px';
             tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
+
+            // Hover-focus: dim every band except the one under the cursor.
+            // Excludes "Other" — hovering it is a no-op, restoring full
+            // brightness, since it's an aggregate rather than one surname.
+            const bounds = lastCumulative[index];
+            if (bounds) {
+                const relY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+                const value = 1 - relY;
+                const bandIndex = bounds.findIndex(([lower, upper]) => value >= lower && value <= upper);
+                const hovered = bandIndex >= 0 && bandIndex < slots.length ? slots[bandIndex] : null;
+                currentHighlight = hovered;
+                applyHighlight(hovered);
+            }
         });
         svg.addEventListener('mouseleave', () => {
             tooltip.style.display = 'none';
             const crosshair = document.getElementById('crosshairLine');
             if (crosshair) crosshair.style.display = 'none';
+            currentHighlight = null;
+            applyHighlight(null);
         });
 
         // ============================================================
@@ -1463,8 +1548,8 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             html += '<th>' + t('tableColOther') + '</th></tr></thead><tbody>';
             rows.forEach((frame) => {
                 html += '<tr><td>' + frame.year + '</td><td>' + frame.population + '</td>';
-                slots.forEach((s) => { html += '<td>' + (Math.round((frame.shares[s] || 0) * 1000) / 10) + '%</td>'; });
-                html += '<td>' + (Math.round(frame.other * 1000) / 10) + '%</td></tr>';
+                slots.forEach((s) => { html += '<td>' + formatDecimal(Math.round((frame.shares[s] || 0) * 1000) / 10, 1) + '%</td>'; });
+                html += '<td>' + formatDecimal(Math.round(frame.other * 1000) / 10, 1) + '%</td></tr>';
             });
             html += '</tbody>';
             chartTable.innerHTML = html;
