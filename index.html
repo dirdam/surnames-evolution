@@ -1435,6 +1435,14 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             renderLegend(lastBounds, slots);
             applyHighlight(currentHighlight);
         }
+        // Re-render on language change too — otherwise the HUD/legend/table's
+        // numbers and translated labels (e.g. "Other") keep showing the old
+        // language's formatting until the next simulation tick, which may
+        // never come while paused.
+        onLangChange(() => {
+            renderChart();
+            if (tableViewActive) renderTable();
+        });
 
         function renderHud() {
             hudYear.textContent = sim.year;
