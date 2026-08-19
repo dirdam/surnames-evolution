@@ -1485,13 +1485,34 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 crosshair.setAttribute('x2', x);
                 crosshair.style.display = 'block';
             }
+            // Which band is under the cursor — drives both the hover-focus
+            // dimming/pause and which single row the tooltip shows (the
+            // full per-surname breakdown already lives in the info panel;
+            // repeating it all here on every hover was redundant clutter).
+            const bounds = lastCumulative[index];
+            let bandIndex = -1;
+            if (bounds) {
+                const relY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+                const value = 1 - relY;
+                bandIndex = bounds.findIndex(([lower, upper]) => value >= lower && value <= upper);
+            }
+            const hovered = bandIndex >= 0 && bandIndex < slots.length ? slots[bandIndex] : null;
+            currentHighlight = hovered;
+            applyHighlight(hovered);
+            // Hovering a real surname pauses playback (the constant rebuild
+            // made hovering while playing an unwatchable flicker); moving
+            // off it to "Other"/a gap resumes.
+            if (hovered) pauseForHover(); else resumeFromHover();
+
             let html = '<div><strong>' + t('tableColYear') + ':</strong> ' + frame.year + '</div>';
             html += '<div><strong>' + t('tableColPopulation') + ':</strong> ' + frame.population + '</div>';
-            slots.forEach((surname, i) => {
-                const pct = Math.round((frame.shares[surname] || 0) * 1000) / 10;
-                html += '<div class="row"><span class="swatch" style="background:' + slotColor(i) + '"></span>' + surnameLabel(surname) + ': ' + formatDecimal(pct, 1) + '%</div>';
-            });
-            html += '<div class="row"><span class="swatch" style="background:' + otherColor() + '"></span>' + t('legendOtherLabel') + ': ' + formatDecimal(Math.round(frame.other * 1000) / 10, 1) + '%</div>';
+            if (bandIndex >= 0) {
+                const isOther = bandIndex === slots.length;
+                const label = isOther ? t('legendOtherLabel') : surnameLabel(slots[bandIndex]);
+                const color = isOther ? otherColor() : slotColor(bandIndex);
+                const share = isOther ? frame.other : (frame.shares[slots[bandIndex]] || 0);
+                html += '<div class="row"><span class="swatch" style="background:' + color + '"></span>' + label + ': ' + formatDecimal(Math.round(share * 1000) / 10, 1) + '%</div>';
+            }
             tooltip.innerHTML = html;
             tooltip.style.display = 'block';
             const tw = tooltip.offsetWidth;
@@ -1499,23 +1520,6 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             if (left + tw > rect.width) left = event.clientX - rect.left - tw - 12;
             tooltip.style.left = left + 'px';
             tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
-
-            // Hover-focus: dim every band except the one under the cursor.
-            // Excludes "Other" — hovering it is a no-op, restoring full
-            // brightness, since it's an aggregate rather than one surname.
-            const bounds = lastCumulative[index];
-            if (bounds) {
-                const relY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
-                const value = 1 - relY;
-                const bandIndex = bounds.findIndex(([lower, upper]) => value >= lower && value <= upper);
-                const hovered = bandIndex >= 0 && bandIndex < slots.length ? slots[bandIndex] : null;
-                currentHighlight = hovered;
-                applyHighlight(hovered);
-                // Hovering a real surname pauses playback (the constant
-                // rebuild made hovering while playing an unwatchable
-                // flicker); moving off it to "Other"/a gap resumes.
-                if (hovered) pauseForHover(); else resumeFromHover();
-            }
         });
         svg.addEventListener('mouseleave', () => {
             tooltip.style.display = 'none';
