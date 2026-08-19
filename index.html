@@ -807,6 +807,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 hudChildrenLabel: 'Children/couple',
                 legendTitle: 'Surnames',
                 legendOtherLabel: 'Other',
+                extinctLabel: 'Extinct',
                 leadingNowOne: 'Currently leading: {surname}',
                 dominanceBannerTitle: 'Simulation complete',
                 dominanceBannerBody: '{surname} has taken over the entire population.',
@@ -860,6 +861,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 hudChildrenLabel: 'Hijos/pareja',
                 legendTitle: 'Apellidos',
                 legendOtherLabel: 'Otros',
+                extinctLabel: 'Extinto',
                 leadingNowOne: 'Apellido líder: {surname}',
                 dominanceBannerTitle: 'Simulación completada',
                 dominanceBannerBody: '{surname} se ha impuesto a toda la población.',
@@ -913,6 +915,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 hudChildrenLabel: '子供/夫婦',
                 legendTitle: '名字',
                 legendOtherLabel: 'その他',
+                extinctLabel: '絶滅',
                 leadingNowOne: '現在の首位：{surname}',
                 dominanceBannerTitle: 'シミュレーション終了',
                 dominanceBannerBody: '{surname}が全人口を支配しました。',
@@ -975,6 +978,20 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 maximumFractionDigits: maxFractionDigits,
                 minimumFractionDigits: 0,
             }).format(n);
+        }
+
+        // Every displayed share (legend, tooltip, table) goes through this:
+        // a 0..1 fraction becomes a fixed 2-decimal percentage (not just
+        // "up to 2" — formatDecimal's trimming would drop a trailing zero,
+        // e.g. show "2.1%" instead of "2.10%"), except an exact 0.00% reads
+        // as "Extinct" rather than a bare zero.
+        function formatPct(share) {
+            const pct = Math.round(share * 10000) / 100;
+            if (pct === 0) return t('extinctLabel');
+            return new Intl.NumberFormat(NUMBER_LOCALE[currentLang] || 'en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }).format(pct) + '%';
         }
 
         function applyStaticDict() {
@@ -1449,7 +1466,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 name.textContent = isOther ? t('legendOtherLabel') : surnameLabel(surname);
                 const pct = document.createElement('span');
                 pct.className = 'legend-pct';
-                pct.textContent = formatDecimal(Math.round(share * 1000) / 10, 1) + '%';
+                pct.textContent = formatPct(share);
                 li.appendChild(swatch);
                 li.appendChild(name);
                 li.appendChild(pct);
@@ -1511,7 +1528,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 const label = isOther ? t('legendOtherLabel') : surnameLabel(slots[bandIndex]);
                 const color = isOther ? otherColor() : slotColor(bandIndex);
                 const share = isOther ? frame.other : (frame.shares[slots[bandIndex]] || 0);
-                html += '<div class="row"><span class="swatch" style="background:' + color + '"></span>' + label + ': ' + formatDecimal(Math.round(share * 1000) / 10, 1) + '%</div>';
+                html += '<div class="row"><span class="swatch" style="background:' + color + '"></span>' + label + ': ' + formatPct(share) + '</div>';
             }
             tooltip.innerHTML = html;
             tooltip.style.display = 'block';
@@ -1557,8 +1574,8 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             html += '<th>' + t('tableColOther') + '</th></tr></thead><tbody>';
             rows.forEach((frame) => {
                 html += '<tr><td>' + frame.year + '</td><td>' + frame.population + '</td>';
-                slots.forEach((s) => { html += '<td>' + formatDecimal(Math.round((frame.shares[s] || 0) * 1000) / 10, 1) + '%</td>'; });
-                html += '<td>' + formatDecimal(Math.round(frame.other * 1000) / 10, 1) + '%</td></tr>';
+                slots.forEach((s) => { html += '<td>' + formatPct(frame.shares[s] || 0) + '</td>'; });
+                html += '<td>' + formatPct(frame.other) + '</td></tr>';
             });
             html += '</tbody>';
             chartTable.innerHTML = html;
