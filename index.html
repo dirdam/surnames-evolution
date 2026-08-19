@@ -1455,8 +1455,8 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 li.appendChild(pct);
                 if (!isOther) {
                     li.dataset.surname = surname;
-                    li.addEventListener('mouseenter', () => { currentHighlight = surname; applyHighlight(surname); });
-                    li.addEventListener('mouseleave', () => { currentHighlight = null; applyHighlight(null); });
+                    li.addEventListener('mouseenter', () => { currentHighlight = surname; applyHighlight(surname); pauseForHover(); });
+                    li.addEventListener('mouseleave', () => { currentHighlight = null; applyHighlight(null); resumeFromHover(); });
                 }
                 legendList.appendChild(li);
             };
@@ -1511,6 +1511,10 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 const hovered = bandIndex >= 0 && bandIndex < slots.length ? slots[bandIndex] : null;
                 currentHighlight = hovered;
                 applyHighlight(hovered);
+                // Hovering a real surname pauses playback (the constant
+                // rebuild made hovering while playing an unwatchable
+                // flicker); moving off it to "Other"/a gap resumes.
+                if (hovered) pauseForHover(); else resumeFromHover();
             }
         });
         svg.addEventListener('mouseleave', () => {
@@ -1519,6 +1523,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             if (crosshair) crosshair.style.display = 'none';
             currentHighlight = null;
             applyHighlight(null);
+            resumeFromHover();
         });
 
         // ============================================================
@@ -1568,6 +1573,25 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         let currentSpeed = 'normal';
         let timer = null;
         let playing = false;
+
+        // True only when playback was auto-paused by hovering a surname
+        // (not a manual pause) — so un-hovering resumes it, but a genuine
+        // manual pause held during a hover stays paused on un-hover.
+        let hoverPaused = false;
+        function pauseForHover() {
+            if (!playing) return;
+            playing = false;
+            hoverPaused = true;
+            stopTimer();
+            renderPlayPauseBtn();
+        }
+        function resumeFromHover() {
+            if (!hoverPaused) return;
+            hoverPaused = false;
+            playing = true;
+            renderPlayPauseBtn();
+            startTimer();
+        }
 
         const speedToggleContainer = document.getElementById('speedToggle');
         function renderSpeedToggle() {
@@ -1632,6 +1656,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         }
 
         playPauseBtn.addEventListener('click', () => {
+            hoverPaused = false;
             playing = !playing;
             renderPlayPauseBtn();
             if (playing) startTimer(); else stopTimer();
@@ -1679,6 +1704,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         function resetSimulation() {
             stopTimer();
             playing = false;
+            hoverPaused = false;
             renderPlayPauseBtn();
             document.getElementById('dominanceBanner').classList.remove('visible');
             document.getElementById('stabilityBanner').classList.remove('visible');
