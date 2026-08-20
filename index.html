@@ -341,7 +341,7 @@
 
         #chartSvg .area {
             stroke: var(--surface-1);
-            stroke-width: 2;
+            stroke-width: 0.75;
             transition: opacity 0.15s ease;
         }
 
@@ -357,15 +357,6 @@
             stroke-width: 1;
             stroke-dasharray: 4 4;
             opacity: 0.5;
-        }
-
-        #chartSvg .direct-label {
-            fill: var(--ink-primary);
-            font-size: 11px;
-            font-weight: 600;
-            paint-order: stroke;
-            stroke: var(--surface-1);
-            stroke-width: 3px;
         }
 
         #chartTooltip {
@@ -492,6 +483,7 @@
             padding: 5px 8px;
             border-radius: 6px;
             font-size: 0.88em;
+            transition: opacity 0.15s ease;
         }
 
         .legend-list li:nth-child(odd) {
@@ -500,6 +492,10 @@
 
         .legend-list li[data-surname]:hover {
             background: rgba(0, 0, 0, 0.08);
+        }
+
+        .legend-list li.dimmed {
+            opacity: 0.35;
         }
 
         .legend-swatch {
@@ -624,6 +620,14 @@
         @media screen and (max-width: 860px) {
             .main-grid {
                 grid-template-columns: 1fr;
+            }
+
+            /* The detail panel isn't height-synced to the chart on a single
+               mobile column, so without a cap the full surname list (up to
+               ~200 entries once "Other" is gone) would run on forever —
+               show roughly 10 rows and let the rest scroll. */
+            .legend-list {
+                max-height: 320px;
             }
         }
 
@@ -1130,6 +1134,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             this.chartHistory = [];
             this.wasAdjusted = false;
             this.checkpointed = false;
+            this.nextStabilityCheckYear = YEARS_STABLE;
             this.lockedSlots = null;
             this.ended = false;
         }
@@ -1281,6 +1286,13 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 return { type: 'dominance', surname: this.people[0] ? this.people[0].surname : '' };
             }
             if (this.checkpointed) return null;
+            // Gated separately from `checkpointed` — clicking "Keep simulating"
+            // clears checkpointed, but the surname-count-stable-for-1000-years
+            // condition below would otherwise still be true on the very next
+            // tick (nothing about the population actually changed), firing
+            // the banner again almost immediately instead of after another
+            // full 1000 years.
+            if (this.year < this.nextStabilityCheckYear) return null;
             const counts = this.getSurnameCounts();
             const total = this.people.length || 1;
             let minPct = 50;
@@ -1288,6 +1300,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             const h = this.surnameCountHistory;
             if (h.length > YEARS_STABLE && h[h.length - 1] === h[h.length - 1 - YEARS_STABLE] && minPct > 5) {
                 this.checkpointed = true;
+                this.nextStabilityCheckYear = this.year + YEARS_STABLE;
                 return { type: 'stability', n: this.surnameCount };
             }
             return null;
@@ -1332,6 +1345,12 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         function applyHighlight(surname) {
             svg.querySelectorAll('.area').forEach((path) => {
                 path.style.opacity = surname ? (path.dataset.surname === surname ? '1' : '0.2') : '';
+            });
+            // Mirror the focus in the legend too — including "Other", same
+            // as the chart — so hovering a chart band shows that surname's
+            // exact percentage at a glance without hunting through the list.
+            legendList.querySelectorAll('li').forEach((li) => {
+                li.classList.toggle('dimmed', !!surname && li.dataset.surname !== surname);
             });
         }
 
@@ -1407,22 +1426,6 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 svg.appendChild(line);
             }
 
-            // Direct labels for the top 4 locked slots, at the rightmost edge.
-            const lastBounds = cumulative[n - 1];
-            slots.slice(0, 4).forEach((surname, i) => {
-                const [lower, upper] = lastBounds[i];
-                if (upper - lower < 0.02) return; // too thin to label
-                const y = VIEW_H - ((lower + upper) / 2) * VIEW_H;
-                const text = document.createElementNS(ns, 'text');
-                text.setAttribute('x', VIEW_W - 6);
-                text.setAttribute('y', y);
-                text.setAttribute('text-anchor', 'end');
-                text.setAttribute('dominant-baseline', 'middle');
-                text.setAttribute('class', 'direct-label');
-                text.textContent = surnameLabel(surname);
-                svg.appendChild(text);
-            });
-
             // Crosshair (hidden until hover).
             const crosshair = document.createElementNS(ns, 'line');
             crosshair.setAttribute('class', 'crosshair');
@@ -1432,7 +1435,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             svg.appendChild(crosshair);
 
             renderHud();
-            renderLegend(lastBounds, slots);
+            renderLegend(slots);
             applyHighlight(currentHighlight);
         }
         // Re-render on language change too — otherwise the HUD/legend/table's
@@ -1450,47 +1453,49 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             hudChildren.textContent = formatDecimal(sim.getChildrenAverage(), 2);
         }
 
-        function renderLegend(lastBounds, slots) {
+        function renderLegend(slots) {
             legendList.innerHTML = '';
 
-            // Color is locked to each surname's slot index (identity), but the
-            // ROWS are re-sorted by current share every render — highest first,
-            // "Other" always last regardless of its (often large) share.
-            const rows = slots.map((surname, i) => {
-                const [lower, upper] = lastBounds ? lastBounds[i] : [0, 0];
-                return { surname, color: slotColor(i), share: upper - lower };
-            });
-            rows.sort((a, b) => b.share - a.share);
+            // Every currently-alive surname gets its own row — no "Other"
+            // lump — sorted highest share first. Only the top-20 locked
+            // slots have their own chart band/color and are hoverable to
+            // focus that band; the rest share the muted "other" swatch and
+            // are informational only (there's no individual band to focus).
+            // A surname that dies out simply stops appearing here, rather
+            // than showing "Extinct" — that wording is for the fixed-column
+            // table/tooltip views, which track a stable set of slots.
+            const counts = sim.getSurnameCounts();
+            const total = sim.size || 1;
+            const slotIndex = new Map(slots.map((surname, i) => [surname, i]));
+
+            const rows = Object.keys(counts)
+                .map((surname) => ({ surname, share: (counts[surname] || 0) / total, slotIdx: slotIndex.has(surname) ? slotIndex.get(surname) : -1 }))
+                .sort((a, b) => b.share - a.share);
 
             const leader = rows[0];
 
-            const addRow = ({ surname, color, share, isOther }) => {
+            rows.forEach(({ surname, share, slotIdx }) => {
+                const isTracked = slotIdx >= 0;
                 const li = document.createElement('li');
                 const swatch = document.createElement('span');
                 swatch.className = 'legend-swatch';
-                swatch.style.background = color;
+                swatch.style.background = isTracked ? slotColor(slotIdx) : otherColor();
                 const name = document.createElement('span');
                 name.className = 'legend-name';
-                name.textContent = isOther ? t('legendOtherLabel') : surnameLabel(surname);
+                name.textContent = surnameLabel(surname);
                 const pct = document.createElement('span');
                 pct.className = 'legend-pct';
                 pct.textContent = formatPct(share);
                 li.appendChild(swatch);
                 li.appendChild(name);
                 li.appendChild(pct);
-                if (!isOther) {
+                if (isTracked) {
                     li.dataset.surname = surname;
                     li.addEventListener('mouseenter', () => { currentHighlight = surname; applyHighlight(surname); pauseForHover(); });
                     li.addEventListener('mouseleave', () => { currentHighlight = null; applyHighlight(null); resumeFromHover(); });
                 }
                 legendList.appendChild(li);
-            };
-
-            rows.forEach((row) => addRow(row));
-            if (lastBounds) {
-                const [lower, upper] = lastBounds[slots.length];
-                addRow({ color: otherColor(), share: upper - lower, isOther: true });
-            }
+            });
 
             leadingNowEl.textContent = leader ? tFmt('leadingNowOne', { surname: surnameLabel(leader.surname) }) : '';
         }
