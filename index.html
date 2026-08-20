@@ -342,7 +342,7 @@
         #chartSvg .area {
             stroke: var(--surface-1);
             stroke-width: 0.75;
-            transition: opacity 0.15s ease;
+            transition: opacity 0.15s ease, fill 5s ease;
         }
 
         #chartSvg .crosshair {
@@ -420,6 +420,36 @@
         .chart-table th:first-child,
         .chart-table td:first-child {
             text-align: left;
+            position: sticky;
+            left: 0;
+            background: var(--surface-1);
+            z-index: 1;
+        }
+
+        .chart-table thead th:first-child {
+            z-index: 2;
+        }
+
+        /* Row backgrounds — the ">"+"*" form (rather than nth-child, which
+           would miscount once the population row's fixed position 1 is
+           mixed in) reaches every cell in the row, including the sticky
+           first column, which otherwise keeps its own hardcoded surface
+           color and wouldn't stripe/tint along with the rest of the row. */
+        .chart-table tbody tr.row-odd > * {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .chart-table tbody tr.population-row > * {
+            background: var(--gridline);
+            font-weight: 600;
+        }
+
+        /* Mirrors legend-hover focus onto the matching table row. Placed
+           after .row-odd (same specificity — "> *" vs "> *" — so source
+           order is the tiebreaker) so it wins when both classes land on
+           the same row. */
+        .chart-table tbody tr.row-focused > * {
+            background: rgba(138, 90, 60, 0.18);
         }
 
         /* --- HUD + legend (detail panel) --- */
@@ -503,6 +533,7 @@
             height: 12px;
             border-radius: 50%;
             flex-shrink: 0;
+            transition: background-color 5s ease;
         }
 
         .legend-name {
@@ -648,7 +679,7 @@
             <h1 data-i18n="pageTitle">Surnames Evolution</h1>
             <p class="subtitle" data-i18n="subtitle">Watch a population's family names spread, compete, and go extinct</p>
             <p class="intro" data-i18n-html="introHtml">
-                Starting from a country's most common surnames, a seeded population of 1,000 people
+                Starting from a country's 200 most common surnames, a seeded population of 10,000 people
                 is simulated generation by generation &mdash; marrying, having children, and dying &mdash;
                 until either one surname takes over, or the mix stays stable for a thousand years.
             </p>
@@ -693,6 +724,14 @@
                     </div>
                 </div>
 
+                <div class="banner" id="overflowBanner">
+                    <h3 id="overflowBannerTitle"></h3>
+                    <p id="overflowBannerBody" data-i18n="overflowBannerBody"></p>
+                    <div class="banner-actions">
+                        <button type="button" class="btn" id="overflowContinueBtn" data-i18n="overflowBannerContinue">Continue</button>
+                    </div>
+                </div>
+
                 <div class="confirm-inline" id="datasetConfirm">
                     <h3 data-i18n="datasetChangeConfirmTitle">Change dataset?</h3>
                     <p data-i18n="datasetChangeConfirmBody">Changing the dataset restarts the simulation.</p>
@@ -723,7 +762,7 @@
 
                 <p class="leading-now" id="leadingNow"></p>
 
-                <p class="legend-title" data-i18n="legendTitle">Surnames</p>
+                <p class="legend-title" id="legendTitle"></p>
                 <ul class="legend-list" id="legendList"></ul>
             </div>
         </div>
@@ -731,7 +770,7 @@
         <section class="panel how-it-works">
             <h2 data-i18n="howItWorksSummary">How it works</h2>
             <ol>
-                <li data-i18n="howStepSeed">It starts with 1,000 people, with each surname's share proportional to its real-world ranking.</li>
+                <li data-i18n="howStepSeed">It starts with 10,000 people, with each surname's share proportional to its real-world ranking.</li>
                 <li data-i18n="howStepAging">Every simulated year, everyone ages by one year.</li>
                 <li data-i18n="howStepMating">People aged 15&ndash;35 may marry and have children &mdash; the more children a couple already has, the less likely they are to have another. Children inherit their father's surname.</li>
                 <li data-i18n="howStepMortality">Everyone has a chance of dying each year, based on real death-rate-by-age data.</li>
@@ -778,9 +817,9 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 browserTabTitle: 'Surnames',
                 pageTitle: 'Surnames Evolution',
                 subtitle: "Watch a population's family names spread, compete, and go extinct",
-                introHtml: 'Starting from a country\'s most common surnames, a seeded population of <strong>1,000 people</strong> is simulated generation by generation &mdash; marrying, having children, and dying &mdash; until either one surname takes over, or the mix stays stable for a thousand years.',
+                introHtml: 'Starting from a country\'s 200 most common surnames, a seeded population of <strong>10,000 people</strong> is simulated generation by generation &mdash; marrying, having children, and dying &mdash; until either one surname takes over, or the mix stays stable for a thousand years.',
                 howItWorksSummary: 'How it works',
-                howStepSeed: "It starts with 1,000 people, with each surname's share proportional to its real-world ranking.",
+                howStepSeed: "It starts with 10,000 people, with each surname's share proportional to its real-world ranking.",
                 howStepAging: 'Every simulated year, everyone ages by one year.',
                 howStepMating: "People aged 15–35 may marry and have children — the more children a couple already has, the less likely they are to have another. Children inherit their father's surname.",
                 howStepMortality: "Everyone has a chance of dying each year, based on real death-rate-by-age data.",
@@ -805,11 +844,11 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 chartViewToggle: 'Chart view',
                 tableColYear: 'Year',
                 tableColPopulation: 'Population',
-                tableColOther: 'Other',
                 hudYearLabel: 'Years',
                 hudPopulationLabel: 'Population',
                 hudChildrenLabel: 'Children/couple',
-                legendTitle: 'Surnames',
+                legendTitleOne: '{n} surname remaining',
+                legendTitleOther: '{n} surnames remaining',
                 legendOtherLabel: 'Other',
                 extinctLabel: 'Extinct',
                 leadingNowOne: 'Currently leading: {surname}',
@@ -820,6 +859,9 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 stabilityBannerBodyOther: 'The number of surnames has held steady at {n} for 1,000 years.',
                 stabilityBannerContinue: 'Keep simulating',
                 stabilityBannerStop: 'Stop here',
+                overflowBannerTitle: 'Only {n} surnames remaining!',
+                overflowBannerBody: 'Every surname that used to be lumped into "Other" now has its own color in the chart and legend below.',
+                overflowBannerContinue: 'Continue',
                 cullToastText: '{reason} decimated the population.',
                 cullReason0: 'A meteorite',
                 cullReason1: 'A bomb',
@@ -832,9 +874,9 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 browserTabTitle: 'Apellidos',
                 pageTitle: 'Evolución de apellidos',
                 subtitle: 'Observa cómo los apellidos de una población se propagan, compiten y se extinguen',
-                introHtml: 'Empezando por los apellidos más comunes de un país, se simula generación tras generación una población de <strong>1.000 personas</strong> &mdash; casándose, teniendo hijos y muriendo &mdash; hasta que un apellido se impone a todos, o la mezcla se mantiene estable durante mil años.',
+                introHtml: 'Empezando por los 200 apellidos más comunes de un país, se simula generación tras generación una población de <strong>10.000 personas</strong> &mdash; casándose, teniendo hijos y muriendo &mdash; hasta que un apellido se impone a todos, o la mezcla se mantiene estable durante mil años.',
                 howItWorksSummary: 'Cómo funciona',
-                howStepSeed: 'Empieza con 1.000 personas, donde la proporción de cada apellido es proporcional a su clasificación real.',
+                howStepSeed: 'Empieza con 10.000 personas, donde la proporción de cada apellido es proporcional a su clasificación real.',
                 howStepAging: 'Cada año simulado, todos envejecen un año.',
                 howStepMating: 'Las personas de entre 15 y 35 años pueden casarse y tener hijos — cuantos más hijos tenga ya una pareja, menos probable es que tengan otro. Los hijos heredan el apellido del padre.',
                 howStepMortality: 'Cada persona tiene una probabilidad de morir cada año, basada en datos reales de mortalidad por edad.',
@@ -859,11 +901,11 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 chartViewToggle: 'Ver gráfico',
                 tableColYear: 'Año',
                 tableColPopulation: 'Población',
-                tableColOther: 'Otros',
                 hudYearLabel: 'Años',
                 hudPopulationLabel: 'Población',
                 hudChildrenLabel: 'Hijos/pareja',
-                legendTitle: 'Apellidos',
+                legendTitleOne: '{n} apellido restante',
+                legendTitleOther: '{n} apellidos restantes',
                 legendOtherLabel: 'Otros',
                 extinctLabel: 'Extinto',
                 leadingNowOne: 'Apellido líder: {surname}',
@@ -874,6 +916,9 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 stabilityBannerBodyOther: 'El número de apellidos se ha mantenido en {n} durante 1.000 años.',
                 stabilityBannerContinue: 'Seguir simulando',
                 stabilityBannerStop: 'Detener aquí',
+                overflowBannerTitle: '¡Solo quedan {n} apellidos!',
+                overflowBannerBody: 'Cada apellido que antes estaba agrupado en "Otros" ahora tiene su propio color en el gráfico y en la leyenda de abajo.',
+                overflowBannerContinue: 'Continuar',
                 cullToastText: '{reason} diezmó a la población.',
                 cullReason0: 'Un meteorito',
                 cullReason1: 'Una bomba',
@@ -886,9 +931,9 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 browserTabTitle: '名字',
                 pageTitle: '名字の進化',
                 subtitle: '人口の名字が広がり、競い合い、絶滅していく様子を観察します',
-                introHtml: 'ある国の最も一般的な名字から始め、<strong>1,000人</strong>の人口を世代ごとにシミュレーションします—結婚し、子供を持ち、死んでいきます—一つの名字が全てを支配するか、1000年間同じ名字が続くまで。',
+                introHtml: 'ある国の最も一般的な200の名字から始め、<strong>10,000人</strong>の人口を世代ごとにシミュレーションします—結婚し、子供を持ち、死んでいきます—一つの名字が全てを支配するか、1000年間同じ名字が続くまで。',
                 howItWorksSummary: '使用方法',
-                howStepSeed: '1,000人の人口で始まり、各名字の割合は実際のランキングに対応しています。',
+                howStepSeed: '10,000人の人口で始まり、各名字の割合は実際のランキングに対応しています。',
                 howStepAging: '1年が過ぎるごとに、皆が1歳年を取ります。',
                 howStepMating: '15歳から35歳の人は結婚して子供を持つことができます—既に子供が多いほど、次の子供を持つ可能性は低くなります。子供は父親の名字を継ぎます。',
                 howStepMortality: '各人の死亡率は、実際の年齢別死亡率データに基づいて計算されます。',
@@ -913,11 +958,11 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 chartViewToggle: 'グラフで見る',
                 tableColYear: '年',
                 tableColPopulation: '人口',
-                tableColOther: 'その他',
                 hudYearLabel: '経過年数',
                 hudPopulationLabel: '人口',
                 hudChildrenLabel: '子供/夫婦',
-                legendTitle: '名字',
+                legendTitleOne: '残り{n}個の名字',
+                legendTitleOther: '残り{n}個の名字',
                 legendOtherLabel: 'その他',
                 extinctLabel: '絶滅',
                 leadingNowOne: '現在の首位：{surname}',
@@ -928,6 +973,9 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 stabilityBannerBodyOther: '名字の数が{n}のまま1000年間変わっていません。',
                 stabilityBannerContinue: '続ける',
                 stabilityBannerStop: 'ここで止める',
+                overflowBannerTitle: '残り{n}個の名字！',
+                overflowBannerBody: 'これまで「その他」にまとめられていた名字が、下のグラフと凡例でそれぞれ専用の色を持つようになりました。',
+                overflowBannerContinue: '続ける',
                 cullToastText: '{reason}が人口を激減させました。',
                 cullReason0: '隕石',
                 cullReason1: '爆弾',
@@ -1094,6 +1142,20 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         const COUPLE_PROBABILITY = 0.9;
         const YEARS_STABLE = 1000;
         const CULL_REASONS = ['cullReason0', 'cullReason1', 'cullReason2', 'cullReason3', 'cullReason4'];
+        // Not part of the original port above — the seed population size,
+        // which the safety valve's thresholds below scale with.
+        const INITIAL_POPULATION = 10000;
+        // Once the number of currently-alive surnames GLOBALLY (locked +
+        // "Other" combined) drops to this many or fewer, promote everyone
+        // still in "Other" to their own individually-charted/hoverable slot
+        // instead of staying lumped into the aggregate band — regardless of
+        // how that count splits between locked and "Other" (e.g. 15 locked +
+        // 5 "Other", or 1 locked + 19 "Other"). There's no separate color
+        // range reserved for the promoted ones — see
+        // Population.prototype.colorIndexFor — they reuse locked slots whose
+        // original surname has since gone extinct, falling back to (rare,
+        // worst-case) duplicate colors.
+        const OVERFLOW_PROMOTE_THRESHOLD = 20;
 
         function Person(surname, sex, age, generation) {
             this.surname = surname;
@@ -1136,6 +1198,17 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             this.checkpointed = false;
             this.nextStabilityCheckYear = YEARS_STABLE;
             this.lockedSlots = null;
+            // Surnames promoted out of "Other" — see maybePromoteOverflow().
+            // A one-time snapshot: once set, never reassigned or grown,
+            // just like lockedSlots (a surname can only go extinct, never
+            // reappear, so the overflow tail only ever shrinks).
+            this.promotedSlots = [];
+            // promoted surname -> reused color-slot index (0-19).
+            this.promotedColorIndex = {};
+            // Set to the alive-surname count by maybePromoteOverflow() the
+            // tick it promotes; checkEnd() consumes it once to surface the
+            // banner, then clears it back to false.
+            this.overflowBannerPending = false;
             this.ended = false;
         }
 
@@ -1159,6 +1232,46 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             const counts = this.getSurnameCounts();
             const ranked = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
             this.lockedSlots = ranked.slice(0, 20);
+        };
+
+        // One-time snapshot: the moment the number of currently-alive
+        // surnames GLOBALLY (locked + "Other") drops to
+        // <= OVERFLOW_PROMOTE_THRESHOLD, promote everyone still in "Other"
+        // at once. After that "Other" is empty for good — nothing is left to
+        // promote later, since surnames only ever go extinct, never reappear.
+        Population.prototype.maybePromoteOverflow = function (counts) {
+            if (this.promotedSlots.length > 0) return;
+            const aliveSurnames = Object.keys(counts);
+            if (aliveSurnames.length > OVERFLOW_PROMOTE_THRESHOLD) return;
+            const lockedSlots = this.lockedSlots || [];
+            const lockedSet = new Set(lockedSlots);
+            const overflowAlive = aliveSurnames.filter((s) => !lockedSet.has(s));
+            if (overflowAlive.length === 0) return;
+            // Reuse a locked slot whose original surname has already gone
+            // extinct — by this point in the simulation there usually are
+            // enough. If not, cycle through all 20 slots regardless
+            // (accepting duplicate colors in this rare worst case).
+            const extinctLockedIndices = lockedSlots
+                .map((surname, i) => (counts[surname] ? -1 : i))
+                .filter((i) => i >= 0);
+            const pool = extinctLockedIndices.length > 0 ? extinctLockedIndices : lockedSlots.map((_, i) => i);
+            this.promotedSlots = overflowAlive;
+            overflowAlive.forEach((surname, i) => {
+                this.promotedColorIndex[surname] = pool[i % pool.length];
+            });
+            // Flag for checkEnd() to pick up on this same tick and surface
+            // the "only N surnames remaining" banner, pausing for the user.
+            this.overflowBannerPending = aliveSurnames.length;
+        };
+
+        // A surname's dedicated color-slot index (0-19), or -1 if it has
+        // none (still lumped into "Other").
+        Population.prototype.colorIndexFor = function (surname) {
+            const lockedIdx = (this.lockedSlots || []).indexOf(surname);
+            if (lockedIdx >= 0) return lockedIdx;
+            return Object.prototype.hasOwnProperty.call(this.promotedColorIndex, surname)
+                ? this.promotedColorIndex[surname]
+                : -1;
         };
 
         Population.prototype.shuffle = function () {
@@ -1223,15 +1336,21 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
 
         Population.prototype.recordChartFrame = function () {
             const counts = this.getSurnameCounts();
+            this.maybePromoteOverflow(counts);
             const total = this.people.length || 1;
+            const trackedSet = new Set([...(this.lockedSlots || []), ...this.promotedSlots]);
+            // Shares are recorded for every currently-alive surname (not just
+            // the tracked/charted slots) so the table view can list all of
+            // them historically instead of lumping the rest into "Other" —
+            // the chart itself still only reads the tracked-slot entries.
             const shares = {};
-            let lockedTotal = 0;
-            (this.lockedSlots || []).forEach((surname) => {
-                const share = (counts[surname] || 0) / total;
+            let trackedTotal = 0;
+            Object.keys(counts).forEach((surname) => {
+                const share = counts[surname] / total;
                 shares[surname] = share;
-                lockedTotal += share;
+                if (trackedSet.has(surname)) trackedTotal += share;
             });
-            const other = Math.max(0, 1 - lockedTotal);
+            const other = Math.max(0, 1 - trackedTotal);
             this.chartHistory.push({ year: this.year, population: this.people.length, shares, other });
             // Bound memory: once long, keep every 2nd, then every 4th entry.
             if (this.chartHistory.length > 900) {
@@ -1260,20 +1379,20 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         // which only ever console.log'd this), except the rare hard cull,
         // which gets a toast because its flavor text was too fun to waste.
         Population.prototype.birthControl = function (onCull) {
-            if (this.size > 4000) {
+            if (this.size > INITIAL_POPULATION * 4) {
                 this.people = this.people.slice(0, Math.floor(this.people.length / 4));
                 const reasonKey = CULL_REASONS[Math.floor(Math.random() * CULL_REASONS.length)];
                 if (onCull) onCull(reasonKey);
             }
             if (!this.wasAdjusted) {
-                if (this.size > 2000) {
+                if (this.size > INITIAL_POPULATION * 2) {
                     this.babyProbability = BASE_BABY_PROBABILITY - 0.015;
                     this.wasAdjusted = true;
-                } else if (this.size < 500) {
+                } else if (this.size < INITIAL_POPULATION * 0.5) {
                     this.babyProbability = BASE_BABY_PROBABILITY + 0.015;
                     this.wasAdjusted = true;
                 }
-            } else if (Math.abs(this.size - 1000) < 100) {
+            } else if (Math.abs(this.size - INITIAL_POPULATION) < INITIAL_POPULATION * 0.1) {
                 this.babyProbability = BASE_BABY_PROBABILITY;
                 this.wasAdjusted = false;
             }
@@ -1284,6 +1403,11 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             if (this.surnameCount === 1) {
                 this.ended = true;
                 return { type: 'dominance', surname: this.people[0] ? this.people[0].surname : '' };
+            }
+            if (this.overflowBannerPending) {
+                const n = this.overflowBannerPending;
+                this.overflowBannerPending = false;
+                return { type: 'overflow', n };
             }
             if (this.checkpointed) return null;
             // Gated separately from `checkpointed` — clicking "Keep simulating"
@@ -1307,7 +1431,11 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         };
 
         // ============================================================
-        // COLOR SLOTS — locked once at generate(), never reassigned.
+        // COLOR SLOTS — 20 total, locked once assigned, never reassigned.
+        // Slot 0-19 is assigned to a locked surname at generate(); a
+        // surname promoted out of "Other" later (see maybePromoteOverflow)
+        // reuses one of these same 20 slots rather than a new range, via
+        // Population.prototype.colorIndexFor.
         // ============================================================
         const SLOT_VARS = Array.from({ length: 20 }, (_, i) => `--series-${i + 1}`);
         function slotColor(index) {
@@ -1324,6 +1452,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         const svg = document.getElementById('chartSvg');
         const tooltip = document.getElementById('chartTooltip');
         const legendList = document.getElementById('legendList');
+        const legendTitleEl = document.getElementById('legendTitle');
         const leadingNowEl = document.getElementById('leadingNow');
         const hudYear = document.getElementById('hudYear');
         const hudPopulation = document.getElementById('hudPopulation');
@@ -1337,6 +1466,21 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         // would otherwise lose their dimmed/focused opacity while playing.
         let currentHighlight = null;
         let lastCumulative = [];
+        // Surnames still mid-reveal after an overflow promotion (or null
+        // when inactive) — set the moment promotion happens (see the
+        // 'overflow' branch in tick()), not just when the banner is
+        // dismissed, since the legend isn't covered by the banner and would
+        // otherwise flash its real color early. While a surname is in this
+        // set, renderChart()/renderLegend() deliberately paint it with
+        // otherColor() (its old "Other" gray) instead of its real slot
+        // color, so it looks unchanged the whole time the banner is up;
+        // startPromotionReveal() then flips the same DOM nodes to their
+        // real color once "Continue" is clicked, letting the CSS
+        // `fill`/background-color transition animate gray fading into
+        // color. Ticking is paused for the whole reveal window (see
+        // startPromotionReveal), so there's no renderChart() re-run to
+        // worry about clobbering the flip.
+        let revealingSurnames = null;
 
         function surnameLabel(surname) {
             return surname;
@@ -1352,6 +1496,10 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             legendList.querySelectorAll('li').forEach((li) => {
                 li.classList.toggle('dimmed', !!surname && li.dataset.surname !== surname);
             });
+            // ...and the table view's row, if it's the visible one.
+            chartTable.querySelectorAll('tr[data-surname]').forEach((tr) => {
+                tr.classList.toggle('row-focused', !!surname && tr.dataset.surname === surname);
+            });
         }
 
         function renderChart() {
@@ -1359,7 +1507,11 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             svg.innerHTML = '';
             if (history.length === 0) return;
 
-            const slots = sim.lockedSlots || [];
+            // Individually-charted surnames: the 20 locked slots plus any
+            // promoted out of "Other" (see maybePromoteOverflow) — same
+            // color-slot indexing (0-19 locked, 20-29 promoted), so slotColor
+            // just reads --series-1..30 by position in this combined list.
+            const slots = (sim.lockedSlots || []).concat(sim.promotedSlots || []);
             const n = history.length;
             const xStep = n > 1 ? VIEW_W / (n - 1) : VIEW_W;
 
@@ -1380,7 +1532,9 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
 
             const ns = 'http://www.w3.org/2000/svg';
             for (let s = 0; s < seriesCount; s++) {
-                const color = s < slots.length ? slotColor(s) : otherColor();
+                const surname = s < slots.length ? slots[s] : null;
+                const isRevealing = !!surname && !!revealingSurnames && revealingSurnames.has(surname);
+                const color = surname ? (isRevealing ? otherColor() : slotColor(sim.colorIndexFor(surname))) : otherColor();
                 let d = '';
                 for (let i = 0; i < n; i++) {
                     const x = i * xStep;
@@ -1435,7 +1589,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             svg.appendChild(crosshair);
 
             renderHud();
-            renderLegend(slots);
+            renderLegend();
             applyHighlight(currentHighlight);
         }
         // Re-render on language change too — otherwise the HUD/legend/table's
@@ -1448,38 +1602,42 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         });
 
         function renderHud() {
-            hudYear.textContent = sim.year;
-            hudPopulation.textContent = sim.size;
+            hudYear.textContent = formatDecimal(sim.year, 0);
+            hudPopulation.textContent = formatDecimal(sim.size, 0);
             hudChildren.textContent = formatDecimal(sim.getChildrenAverage(), 2);
         }
 
-        function renderLegend(slots) {
+        function renderLegend() {
             legendList.innerHTML = '';
 
             // Every currently-alive surname gets its own row — no "Other"
-            // lump — sorted highest share first. Only the top-20 locked
-            // slots have their own chart band/color and are hoverable to
-            // focus that band; the rest share the muted "other" swatch and
-            // are informational only (there's no individual band to focus).
-            // A surname that dies out simply stops appearing here, rather
-            // than showing "Extinct" — that wording is for the fixed-column
-            // table/tooltip views, which track a stable set of slots.
+            // lump — sorted highest share first. Only surnames with a real
+            // color slot (the 20 locked ones, plus any promoted out of
+            // "Other" — see Population.prototype.colorIndexFor) are
+            // hoverable to focus their chart band; anyone still in "Other"
+            // shares its muted swatch and is informational only (there's no
+            // individual band to focus). A surname that dies out simply
+            // stops appearing here, rather than showing "Extinct" — that
+            // wording is for the fixed-column table/tooltip views, which
+            // track a stable set of slots.
             const counts = sim.getSurnameCounts();
             const total = sim.size || 1;
-            const slotIndex = new Map(slots.map((surname, i) => [surname, i]));
 
             const rows = Object.keys(counts)
-                .map((surname) => ({ surname, share: (counts[surname] || 0) / total, slotIdx: slotIndex.has(surname) ? slotIndex.get(surname) : -1 }))
+                .map((surname) => ({ surname, share: (counts[surname] || 0) / total, colorIdx: sim.colorIndexFor(surname) }))
                 .sort((a, b) => b.share - a.share);
 
             const leader = rows[0];
+            const remainingKey = rows.length === 1 ? 'legendTitleOne' : 'legendTitleOther';
+            legendTitleEl.textContent = tFmt(remainingKey, { n: rows.length });
 
-            rows.forEach(({ surname, share, slotIdx }) => {
-                const isTracked = slotIdx >= 0;
+            rows.forEach(({ surname, share, colorIdx }) => {
+                const isTracked = colorIdx >= 0;
+                const isRevealing = !!revealingSurnames && revealingSurnames.has(surname);
                 const li = document.createElement('li');
                 const swatch = document.createElement('span');
                 swatch.className = 'legend-swatch';
-                swatch.style.background = isTracked ? slotColor(slotIdx) : otherColor();
+                swatch.style.background = isTracked && !isRevealing ? slotColor(colorIdx) : otherColor();
                 const name = document.createElement('span');
                 name.className = 'legend-name';
                 name.textContent = surnameLabel(surname);
@@ -1507,7 +1665,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             const relX = (event.clientX - rect.left) / rect.width;
             const index = Math.max(0, Math.min(history.length - 1, Math.round(relX * (history.length - 1))));
             const frame = history[index];
-            const slots = sim.lockedSlots || [];
+            const slots = (sim.lockedSlots || []).concat(sim.promotedSlots || []);
             const crosshair = document.getElementById('crosshairLine');
             if (crosshair) {
                 const x = history.length > 1 ? (index / (history.length - 1)) * VIEW_W : 0;
@@ -1534,12 +1692,12 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             // off it to "Other"/a gap resumes.
             if (hovered) pauseForHover(); else resumeFromHover();
 
-            let html = '<div><strong>' + t('tableColYear') + ':</strong> ' + frame.year + '</div>';
-            html += '<div><strong>' + t('tableColPopulation') + ':</strong> ' + frame.population + '</div>';
+            let html = '<div><strong>' + t('tableColYear') + ':</strong> ' + formatDecimal(frame.year, 0) + '</div>';
+            html += '<div><strong>' + t('tableColPopulation') + ':</strong> ' + formatDecimal(frame.population, 0) + '</div>';
             if (bandIndex >= 0) {
                 const isOther = bandIndex === slots.length;
                 const label = isOther ? t('legendOtherLabel') : surnameLabel(slots[bandIndex]);
-                const color = isOther ? otherColor() : slotColor(bandIndex);
+                const color = isOther ? otherColor() : slotColor(sim.colorIndexFor(slots[bandIndex]));
                 const share = isOther ? frame.other : (frame.shares[slots[bandIndex]] || 0);
                 html += '<div class="row"><span class="swatch" style="background:' + color + '"></span>' + label + ': ' + formatPct(share) + '</div>';
             }
@@ -1574,21 +1732,49 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             if (tableViewActive) renderTable();
         });
 
+        const TABLE_MAX_COLUMNS = 10;
+
         function renderTable() {
             const history = sim.chartHistory;
-            const slots = sim.lockedSlots || [];
-            const step = Math.max(1, Math.floor(history.length / 10));
-            const rows = [];
-            for (let i = 0; i < history.length; i += step) rows.push(history[i]);
-            if (history.length && rows[rows.length - 1] !== history[history.length - 1]) rows.push(history[history.length - 1]);
+            // Exactly TABLE_MAX_COLUMNS evenly-spaced frames (first and last
+            // always included) — not that many plus an always-appended
+            // final frame, which used to make it 11.
+            let frames;
+            if (history.length <= TABLE_MAX_COLUMNS) {
+                frames = history;
+            } else {
+                const step = (history.length - 1) / (TABLE_MAX_COLUMNS - 1);
+                frames = Array.from({ length: TABLE_MAX_COLUMNS }, (_, i) => history[Math.round(i * step)]);
+            }
 
-            let html = '<thead><tr><th>' + t('tableColYear') + '</th><th>' + t('tableColPopulation') + '</th>';
-            slots.forEach((s) => { html += '<th>' + surnameLabel(s) + '</th>'; });
-            html += '<th>' + t('tableColOther') + '</th></tr></thead><tbody>';
-            rows.forEach((frame) => {
-                html += '<tr><td>' + frame.year + '</td><td>' + frame.population + '</td>';
-                slots.forEach((s) => { html += '<td>' + formatPct(frame.shares[s] || 0) + '</td>'; });
-                html += '<td>' + formatPct(frame.other) + '</td></tr>';
+            // Transposed: surnames as rows, sampled years as columns — and
+            // every surname that was ever alive in a sampled year gets its
+            // own row (no "Other" lump), sorted by its most recent share,
+            // then by its peak share as a tiebreak for ones already extinct.
+            const surnameSet = new Set();
+            frames.forEach((frame) => {
+                Object.keys(frame.shares).forEach((s) => { if (frame.shares[s] > 0) surnameSet.add(s); });
+            });
+            const lastFrame = frames[frames.length - 1];
+            const surnames = [...surnameSet].sort((a, b) => {
+                const lastA = (lastFrame.shares[a] || 0);
+                const lastB = (lastFrame.shares[b] || 0);
+                if (lastB !== lastA) return lastB - lastA;
+                const maxA = Math.max(...frames.map((f) => f.shares[a] || 0));
+                const maxB = Math.max(...frames.map((f) => f.shares[b] || 0));
+                return maxB - maxA;
+            });
+
+            let html = '<thead><tr><th>' + t('tableColYear') + '</th>';
+            frames.forEach((frame) => { html += '<th>' + formatDecimal(frame.year, 0) + '</th>'; });
+            html += '</tr></thead><tbody>';
+            html += '<tr class="population-row"><th>' + t('tableColPopulation') + '</th>';
+            frames.forEach((frame) => { html += '<td>' + formatDecimal(frame.population, 0) + '</td>'; });
+            html += '</tr>';
+            surnames.forEach((surname, i) => {
+                html += '<tr data-surname="' + surname + '"' + (i % 2 === 1 ? ' class="row-odd"' : '') + '><th>' + surnameLabel(surname) + '</th>';
+                frames.forEach((frame) => { html += '<td>' + formatPct(frame.shares[surname] || 0) + '</td>'; });
+                html += '</tr>';
             });
             html += '</tbody>';
             chartTable.innerHTML = html;
@@ -1668,6 +1854,20 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                     playing = false;
                     renderPlayPauseBtn();
                     break;
+                } else if (outcome && outcome.type === 'overflow') {
+                    // Set now (not just when "Continue" is clicked) so the
+                    // renderChart()/renderLegend() call at the bottom of
+                    // this function already paints the promoted surnames
+                    // gray — otherwise the legend (which, unlike the chart,
+                    // isn't covered by the banner) would flash their real
+                    // color immediately, then snap back to gray once the
+                    // reveal starts, then fade back in.
+                    revealingSurnames = new Set(sim.promotedSlots);
+                    showOverflowBanner(outcome.n);
+                    stopTimer();
+                    playing = false;
+                    renderPlayPauseBtn();
+                    break;
                 } else if (outcome && outcome.type === 'stability') {
                     showStabilityBanner(outcome.n);
                     stopTimer();
@@ -1710,6 +1910,13 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             document.getElementById('stabilityBanner').classList.remove('visible');
         });
 
+        document.getElementById('overflowContinueBtn').addEventListener('click', () => {
+            document.getElementById('overflowBanner').classList.remove('visible');
+            playing = true;
+            renderPlayPauseBtn();
+            startPromotionReveal();
+        });
+
         function showDominanceBanner(surname) {
             document.getElementById('dominanceBannerBody').textContent = tFmt('dominanceBannerBody', { surname: surnameLabel(surname) });
             document.getElementById('dominanceBanner').classList.add('visible');
@@ -1719,6 +1926,57 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             const key = n === 1 ? 'stabilityBannerBodyOne' : 'stabilityBannerBodyOther';
             document.getElementById('stabilityBannerBody').textContent = tFmt(key, { n });
             document.getElementById('stabilityBanner').classList.add('visible');
+        }
+
+        function showOverflowBanner(n) {
+            document.getElementById('overflowBannerTitle').textContent = tFmt('overflowBannerTitle', { n });
+            document.getElementById('overflowBanner').classList.add('visible');
+        }
+
+        // Reveals newly-promoted surnames by fading them from their old
+        // "Other" gray to their real color over PROMOTION_REVEAL_MS, so the
+        // user sees the chart/legend looking unchanged at first (they've
+        // been painted gray ever since the promotion happened — see the
+        // 'overflow' branch in tick() above, which sets revealingSurnames
+        // before its own trailing renderChart() call), then watches the new
+        // colors emerge once they dismiss the banner — rather than an
+        // instant snap. We flip fill/background directly on the existing
+        // (already-gray) DOM nodes rather than re-rendering first, which is
+        // what lets the CSS `transition: fill/background-color` animate the
+        // fade instead of just snapping (a freshly (re)created element has
+        // no prior value to transition from). Ticking is deliberately
+        // delayed until the reveal finishes so no renderChart() rebuild
+        // tears out the mid-fade elements.
+        const PROMOTION_REVEAL_MS = 5000;
+        let promotionRevealTimer = null;
+        function startPromotionReveal() {
+            if (!sim.promotedSlots || sim.promotedSlots.length === 0) { startTimer(); return; }
+            revealingSurnames = new Set(sim.promotedSlots);
+            // Force a layout flush so the browser commits to the gray
+            // fill/background already painted before we flip to the real
+            // color below — with no reflow in between, both states could
+            // get coalesced into a single paint and the CSS transition
+            // would have nothing to interpolate from (it'd just snap
+            // straight to the end color).
+            void svg.offsetWidth;
+            svg.querySelectorAll('path[data-surname]').forEach((path) => {
+                if (revealingSurnames.has(path.dataset.surname)) {
+                    path.setAttribute('fill', slotColor(sim.colorIndexFor(path.dataset.surname)));
+                }
+            });
+            legendList.querySelectorAll('li[data-surname]').forEach((li) => {
+                if (revealingSurnames.has(li.dataset.surname)) {
+                    const swatch = li.querySelector('.legend-swatch');
+                    if (swatch) swatch.style.background = slotColor(sim.colorIndexFor(li.dataset.surname));
+                }
+            });
+            clearTimeout(promotionRevealTimer);
+            promotionRevealTimer = setTimeout(() => {
+                promotionRevealTimer = null;
+                revealingSurnames = null;
+                stopTimer();
+                if (playing) startTimer();
+            }, PROMOTION_REVEAL_MS);
         }
 
         let cullToastTimer = null;
@@ -1733,7 +1991,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         // ============================================================
         // BOOTSTRAP
         // ============================================================
-        let sim = new Population(1000);
+        let sim = new Population(INITIAL_POPULATION);
 
         function resetSimulation() {
             stopTimer();
@@ -1742,8 +2000,12 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             renderPlayPauseBtn();
             document.getElementById('dominanceBanner').classList.remove('visible');
             document.getElementById('stabilityBanner').classList.remove('visible');
+            document.getElementById('overflowBanner').classList.remove('visible');
+            clearTimeout(promotionRevealTimer);
+            promotionRevealTimer = null;
+            revealingSurnames = null;
             tooltip.style.display = 'none';
-            sim = new Population(1000);
+            sim = new Population(INITIAL_POPULATION);
             sim.generate(currentDataset);
             sim.shuffle();
             sim.recordChartFrame();
