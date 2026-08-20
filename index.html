@@ -754,10 +754,6 @@
                         <div class="value" id="hudPopulation">0</div>
                         <div class="label" data-i18n="hudPopulationLabel">Population</div>
                     </div>
-                    <div class="hud-stat">
-                        <div class="value" id="hudChildren">0</div>
-                        <div class="label" data-i18n="hudChildrenLabel">Children/couple</div>
-                    </div>
                 </div>
 
                 <p class="leading-now" id="leadingNow"></p>
@@ -846,7 +842,6 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 tableColPopulation: 'Population',
                 hudYearLabel: 'Years',
                 hudPopulationLabel: 'Population',
-                hudChildrenLabel: 'Children/couple',
                 legendTitleOne: '{n} surname remaining',
                 legendTitleOther: '{n} surnames remaining',
                 legendOtherLabel: 'Other',
@@ -903,7 +898,6 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 tableColPopulation: 'Población',
                 hudYearLabel: 'Años',
                 hudPopulationLabel: 'Población',
-                hudChildrenLabel: 'Hijos/pareja',
                 legendTitleOne: '{n} apellido restante',
                 legendTitleOther: '{n} apellidos restantes',
                 legendOtherLabel: 'Otros',
@@ -960,7 +954,6 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 tableColPopulation: '人口',
                 hudYearLabel: '経過年数',
                 hudPopulationLabel: '人口',
-                hudChildrenLabel: '子供/夫婦',
                 legendTitleOne: '残り{n}個の名字',
                 legendTitleOther: '残り{n}個の名字',
                 legendOtherLabel: 'その他',
@@ -1326,14 +1319,6 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             this.surnameCount = Object.keys(this.getSurnameCounts()).length;
         };
 
-        Population.prototype.getChildrenAverage = function () {
-            let sum = 0, n = 0;
-            for (let i = 0; i < this.people.length; i++) {
-                if (this.people[i].sex === 1) { sum += this.people[i].childrenCount; n += 1; }
-            }
-            return n === 0 ? 0 : Math.round(100 * sum / n) / 100;
-        };
-
         Population.prototype.recordChartFrame = function () {
             const counts = this.getSurnameCounts();
             this.maybePromoteOverflow(counts);
@@ -1456,7 +1441,6 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         const leadingNowEl = document.getElementById('leadingNow');
         const hudYear = document.getElementById('hudYear');
         const hudPopulation = document.getElementById('hudPopulation');
-        const hudChildren = document.getElementById('hudChildren');
         const VIEW_W = 1000, VIEW_H = 360;
         const CENTURY_YEARS = 100;
 
@@ -1604,7 +1588,6 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         function renderHud() {
             hudYear.textContent = formatDecimal(sim.year, 0);
             hudPopulation.textContent = formatDecimal(sim.size, 0);
-            hudChildren.textContent = formatDecimal(sim.getChildrenAverage(), 2);
         }
 
         function renderLegend() {
