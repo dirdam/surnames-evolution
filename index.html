@@ -690,6 +690,21 @@
             .hud {
                 grid-template-columns: 1fr 1fr 1fr;
             }
+
+            /* .controls-bar's groups (play/reset, speed, dataset, view) are
+               each a different natural width, so once flex-wrap stacks them
+               onto their own lines, left-aligning (the desktop default)
+               makes them look staggered/uneven — center every wrapped line
+               instead. The spacer only exists to push dataset/view to the
+               right of speed on a single wide row; once wrapped there's no
+               "right" to push to, so it'd just be a stray empty line. */
+            .controls-bar {
+                justify-content: center;
+            }
+
+            .spacer {
+                display: none;
+            }
         }
     </style>
 </head>
