@@ -3,7 +3,7 @@
 Go to **[https://dirdam.squadro.app/surnames/](https://dirdam.squadro.app/surnames/)** to access the app.
 
 A population simulation: starting from a country's most common surnames, a seeded
-population of 1,000 people is simulated generation by generation — marrying, having
+population of 2,000 people is simulated generation by generation — marrying, having
 children, and dying by real age-based mortality rates — until either one surname
 takes over everyone, or the mix stays stable for a thousand years. Watch it as a
 streamgraph, pick a dataset (US/Spain/Japan census surname frequencies) independently
