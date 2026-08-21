@@ -376,7 +376,8 @@
             opacity: 0.5;
         }
 
-        #chartTooltip {
+        #chartTooltip,
+        #individualTooltip {
             position: absolute;
             display: none;
             background: var(--surface-1);
@@ -392,13 +393,15 @@
             white-space: nowrap;
         }
 
-        #chartTooltip .row {
+        #chartTooltip .row,
+        #individualTooltip .row {
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        #chartTooltip .swatch {
+        #chartTooltip .swatch,
+        #individualTooltip .swatch {
             width: 8px;
             height: 8px;
             border-radius: 50%;
@@ -724,6 +727,7 @@
 
                 <div class="viz-root" id="individualViewWrap" style="display: none;">
                     <canvas id="individualCanvas"></canvas>
+                    <div id="individualTooltip"></div>
                 </div>
 
                 <!-- Overlays live at the .chart-panel level (not inside
@@ -1663,8 +1667,22 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 li.appendChild(pct);
                 if (isTracked) {
                     li.dataset.surname = surname;
-                    li.addEventListener('mouseenter', () => { currentHighlight = surname; applyHighlight(surname); pauseForHover(); });
-                    li.addEventListener('mouseleave', () => { currentHighlight = null; applyHighlight(null); resumeFromHover(); });
+                    li.addEventListener('mouseenter', () => {
+                        currentHighlight = surname;
+                        applyHighlight(surname);
+                        pauseForHover();
+                        // Unlike the SVG/legend/table above (styling toggled
+                        // on existing DOM nodes), the canvas needs an active
+                        // redraw to show the highlight — and since hovering
+                        // just paused ticking, nothing else will trigger one.
+                        if (currentView === 'individual') renderIndividualView();
+                    });
+                    li.addEventListener('mouseleave', () => {
+                        currentHighlight = null;
+                        applyHighlight(null);
+                        resumeFromHover();
+                        if (currentView === 'individual') renderIndividualView();
+                    });
                 }
                 legendList.appendChild(li);
             });
@@ -1738,12 +1756,12 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         let currentView = 'chart';
         const VIEW_ORDER = ['chart', 'table', 'individual'];
         const VIEW_KEYS = { chart: 'chartViewToggle', table: 'tableViewToggle', individual: 'individualViewToggle' };
-        // Lucide icons (chart-area / sheet / grid-2x2-x) — icon-only buttons,
+        // Lucide icons (chart-area / sheet / loader) — icon-only buttons,
         // the i18n labels above are still used as their aria-label.
         const VIEW_ICONS = {
             chart: '<path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="M7 11.207a.5.5 0 0 1 .146-.353l2-2a.5.5 0 0 1 .708 0l3.292 3.292a.5.5 0 0 0 .708 0l4.292-4.292a.5.5 0 0 1 .854.353V16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z" />',
             table: '<rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><line x1="3" x2="21" y1="9" y2="9" /><line x1="3" x2="21" y1="15" y2="15" /><line x1="9" x2="9" y1="9" y2="21" /><line x1="15" x2="15" y1="9" y2="21" />',
-            individual: '<path d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3" /><path d="m16 16 5 5" /><path d="m16 21 5-5" />',
+            individual: '<path d="M12 2v4" /><path d="m16.2 7.8 2.9-2.9" /><path d="M18 12h4" /><path d="m16.2 16.2 2.9 2.9" /><path d="M12 18v4" /><path d="m4.9 19.1 2.9-2.9" /><path d="M2 12h4" /><path d="m4.9 4.9 2.9 2.9" />',
         };
         const chartSvgWrap = document.getElementById('chartSvgWrap');
         const chartTable = document.getElementById('chartTable');
@@ -1834,6 +1852,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         // ============================================================
         const individualCanvas = document.getElementById('individualCanvas');
         const ictx = individualCanvas.getContext('2d');
+        const individualTooltip = document.getElementById('individualTooltip');
 
         // Squarified treemap (Bruls/Huizing/van Wijk). items: [{key, value}]
         // with value > 0. Returns [{key, x, y, width, height}] in pixels.
@@ -1932,17 +1951,23 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
         // life instead of reshuffling every redraw. Batched into a single
         // fill() call per surname (canvas 2D's per-call overhead dominates
         // at this scale, not per-primitive cost).
-        function drawCluster(ctx, people, anchor, color, cssW, cssH) {
+        // sqrt(count/baseCount): area (not radius) scales with population,
+        // so a 4x bigger surname gets 2x the radius, not 4x. Clamped so a
+        // surname that started as a tiny sliver and later dominates can't
+        // push its dots off the edge of the canvas. Shared by drawCluster
+        // (drawing) and the canvas hover hit-test below, so they can never
+        // disagree about where a cluster's boundary actually is.
+        function clusterRadiusFor(anchor, count, cssW, cssH) {
+            return Math.min(anchor.baseRadius * Math.sqrt(count / anchor.baseCount), Math.min(cssW, cssH) / 2);
+        }
+
+        // `alpha` mirrors applyHighlight()'s chart dimming (1 = normal,
+        // 0.2 = dimmed because some other surname is hovered).
+        function drawCluster(ctx, people, anchor, color, cssW, cssH, alpha) {
             const count = people.length;
             if (count <= 0) return;
-            // sqrt(count/baseCount): area (not radius) scales with
-            // population, so a 4x bigger surname gets 2x the radius, not 4x.
-            // Clamped so a surname that started as a tiny sliver and later
-            // dominates can't push its dots off the edge of the canvas.
-            const currentRadius = Math.min(
-                anchor.baseRadius * Math.sqrt(count / anchor.baseCount),
-                Math.min(cssW, cssH) / 2
-            );
+            const currentRadius = clusterRadiusFor(anchor, count, cssW, cssH);
+            ctx.globalAlpha = alpha;
             ctx.fillStyle = color;
             ctx.beginPath();
             people.forEach((p) => {
@@ -1957,6 +1982,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 ctx.arc(x, y, DOT_RADIUS, 0, Math.PI * 2);
             });
             ctx.fill();
+            ctx.globalAlpha = 1;
         }
 
         // devicePixelRatio-aware canvas sizing. Assigning canvas.width/height
@@ -2025,9 +2051,67 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 const color = revealingSurnames && revealingSurnames.has(surname)
                     ? lerpColor(otherColor(), targetColor, promotionRevealProgress())
                     : targetColor;
-                drawCluster(ictx, peopleBySurname[surname], anchor, color, cssW, cssH);
+                // Mirrors applyHighlight()'s chart-band dimming (0.2) so
+                // hovering a surname in the legend focuses its cluster here
+                // too, not just the chart/table.
+                const alpha = currentHighlight ? (surname === currentHighlight ? 1 : 0.2) : 1;
+                drawCluster(ictx, peopleBySurname[surname], anchor, color, cssW, cssH, alpha);
             });
         }
+
+        // Same hover-to-focus behavior as the chart's own mousemove handler
+        // (see svg.addEventListener('mousemove', ...) above): dim every
+        // other surname, pause playback, and show a tooltip. Hit-testing is
+        // done against each cluster's disk (cheap — one check per surname,
+        // not per dot) rather than per-dot, since "which surname" is all
+        // that's needed; ties (overlapping clusters, see drawCluster's
+        // comment on the coordinate clamp) go to whichever cluster the
+        // cursor is proportionally closest to its own center.
+        individualCanvas.addEventListener('mousemove', (event) => {
+            if (!clusterAnchors) return;
+            const rect = individualCanvas.getBoundingClientRect();
+            const mx = event.clientX - rect.left;
+            const my = event.clientY - rect.top;
+            const counts = sim.getSurnameCounts();
+            let hovered = null;
+            let bestRatio = 1; // must be inside the disk (ratio <= 1) to count at all
+            Object.keys(clusterAnchors).forEach((surname) => {
+                const count = counts[surname] || 0;
+                if (count <= 0) return;
+                const anchor = clusterAnchors[surname];
+                const radius = clusterRadiusFor(anchor, count, rect.width, rect.height);
+                if (radius <= 0) return;
+                const dx = mx - anchor.cx, dy = my - anchor.cy;
+                const ratio = Math.sqrt(dx * dx + dy * dy) / radius;
+                if (ratio <= bestRatio) { bestRatio = ratio; hovered = surname; }
+            });
+            currentHighlight = hovered;
+            applyHighlight(hovered);
+            if (hovered) pauseForHover(); else resumeFromHover();
+            renderIndividualView(); // reflect the highlight now — ticking may be paused, so nothing else will
+
+            if (hovered) {
+                const colorIdx = sim.colorIndexFor(hovered);
+                const color = colorIdx >= 0 ? slotColor(colorIdx) : otherColor();
+                const share = counts[hovered] / (sim.size || 1);
+                individualTooltip.innerHTML = '<div class="row"><span class="swatch" style="background:' + color + '"></span>' + surnameLabel(hovered) + ': ' + formatPct(share) + '</div>';
+                individualTooltip.style.display = 'block';
+                const tw = individualTooltip.offsetWidth;
+                let left = mx + 12;
+                if (left + tw > rect.width) left = mx - tw - 12;
+                individualTooltip.style.left = left + 'px';
+                individualTooltip.style.top = (my - 10) + 'px';
+            } else {
+                individualTooltip.style.display = 'none';
+            }
+        });
+        individualCanvas.addEventListener('mouseleave', () => {
+            individualTooltip.style.display = 'none';
+            currentHighlight = null;
+            applyHighlight(null);
+            resumeFromHover();
+            renderIndividualView();
+        });
 
         // ============================================================
         // CONTROLS: play/pause/reset/speed
