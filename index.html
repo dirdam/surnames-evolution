@@ -883,6 +883,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 legendTitleOther: '{n} surnames remaining',
                 legendOtherLabel: 'Other',
                 extinctLabel: 'Extinct',
+                maxDiffusionLabel: 'Max. diffusion',
                 leadingNowOne: 'Currently leading: {surname}',
                 dominanceBannerTitle: 'Simulation complete',
                 dominanceBannerBody: '{surname} has taken over the entire population.',
@@ -940,6 +941,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 legendTitleOther: '{n} apellidos restantes',
                 legendOtherLabel: 'Otros',
                 extinctLabel: 'Extinto',
+                maxDiffusionLabel: 'Difusión máx.',
                 leadingNowOne: 'Apellido líder: {surname}',
                 dominanceBannerTitle: 'Simulación completada',
                 dominanceBannerBody: '{surname} se ha impuesto a toda la población.',
@@ -997,6 +999,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 legendTitleOther: '残り{n}個の名字',
                 legendOtherLabel: 'その他',
                 extinctLabel: '絶滅',
+                maxDiffusionLabel: '最大拡散率',
                 leadingNowOne: '現在の首位：{surname}',
                 dominanceBannerTitle: 'シミュレーション終了',
                 dominanceBannerBody: '{surname}が全人口を支配しました。',
@@ -1233,8 +1236,11 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             this.surnameCountHistory = [];
             this.chartHistory = [];
             this.wasAdjusted = false;
+            // The "held steady for 1000 years" banner offers a one-time
+            // choice (keep simulating or stop here) — once shown, it's
+            // never shown again for this run regardless of which button
+            // gets clicked (see checkEnd() and stabilityContinueBtn).
             this.checkpointed = false;
-            this.nextStabilityCheckYear = YEARS_STABLE;
             this.lockedSlots = null;
             // Surnames promoted out of "Other" — see maybePromoteOverflow().
             // A one-time snapshot: once set, never reassigned or grown,
@@ -1248,6 +1254,11 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             // banner, then clears it back to false.
             this.overflowBannerPending = false;
             this.ended = false;
+            // surname -> highest share it's ever reached, updated every
+            // recordChartFrame() — kept as a running max rather than
+            // scanning chartHistory, since that gets thinned over long
+            // runs (see recordChartFrame) and could miss the true peak.
+            this.maxShare = {};
         }
 
         Population.prototype.generate = function (datasetKey) {
@@ -1384,6 +1395,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 const share = counts[surname] / total;
                 shares[surname] = share;
                 if (trackedSet.has(surname)) trackedTotal += share;
+                if (!this.maxShare[surname] || share > this.maxShare[surname]) this.maxShare[surname] = share;
             });
             const other = Math.max(0, 1 - trackedTotal);
             this.chartHistory.push({ year: this.year, population: this.people.length, shares, other });
@@ -1444,14 +1456,7 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 this.overflowBannerPending = false;
                 return { type: 'overflow', n };
             }
-            if (this.checkpointed) return null;
-            // Gated separately from `checkpointed` — clicking "Keep simulating"
-            // clears checkpointed, but the surname-count-stable-for-1000-years
-            // condition below would otherwise still be true on the very next
-            // tick (nothing about the population actually changed), firing
-            // the banner again almost immediately instead of after another
-            // full 1000 years.
-            if (this.year < this.nextStabilityCheckYear) return null;
+            if (this.checkpointed) return null; // already offered once this run — never again
             const counts = this.getSurnameCounts();
             const total = this.people.length || 1;
             let minPct = 50;
@@ -1459,7 +1464,6 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             const h = this.surnameCountHistory;
             if (h.length > YEARS_STABLE && h[h.length - 1] === h[h.length - 1 - YEARS_STABLE] && minPct > 5) {
                 this.checkpointed = true;
-                this.nextStabilityCheckYear = this.year + YEARS_STABLE;
                 return { type: 'stability', n: this.surnameCount };
             }
             return null;
@@ -1947,7 +1951,11 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             return consumeAll ? null : { x, y: y + stripHeight, width, height: height - stripHeight };
         }
 
-        const DOT_RADIUS = 1.3;
+        const DOT_RADIUS = 2;
+        // Marks the center of a surname that used to have its own cluster
+        // but has since died out completely — see the extinct-marker loop
+        // in renderIndividualView() and its hover hit-test below.
+        const EXTINCT_MARKER_RADIUS = 2;
 
         // Fixed per-surname cluster centers/sizes, computed once per
         // simulation run (see renderIndividualView) rather than every tick —
@@ -2073,6 +2081,26 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 const alpha = currentHighlight ? (surname === currentHighlight ? 1 : 0.2) : 1;
                 drawCluster(ictx, peopleBySurname[surname], anchor, color, cssW, cssH, alpha);
             });
+
+            // Leave a small marker at every extinct surname's old cluster
+            // center — a surname can only ever go extinct, never come
+            // back (see maybePromoteOverflow's comment elsewhere), so once
+            // a spot goes quiet it stays that way, and the marker is a
+            // permanent little memorial rather than something that needs
+            // to be cleaned up later.
+            Object.keys(clusterAnchors).forEach((surname) => {
+                if (peopleBySurname[surname]) return; // still alive — drawn above
+                const anchor = clusterAnchors[surname];
+                const colorIdx = sim.colorIndexFor(surname);
+                const color = colorIdx >= 0 ? slotColor(colorIdx) : otherColor();
+                const alpha = currentHighlight ? (surname === currentHighlight ? 1 : 0.2) : 1;
+                ictx.globalAlpha = alpha;
+                ictx.fillStyle = color;
+                ictx.beginPath();
+                ictx.arc(anchor.cx, anchor.cy, EXTINCT_MARKER_RADIUS, 0, Math.PI * 2);
+                ictx.fill();
+                ictx.globalAlpha = 1;
+            });
         }
 
         // Same hover-to-focus behavior as the chart's own mousemove handler
@@ -2101,6 +2129,18 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
                 const ratio = Math.sqrt(dx * dx + dy * dy) / radius;
                 if (ratio <= bestRatio) { bestRatio = ratio; hovered = surname; }
             });
+            // No living cluster under the cursor — check extinct markers
+            // too (small, so only a tight radius counts as a hit).
+            if (!hovered) {
+                let bestDist = EXTINCT_MARKER_RADIUS;
+                Object.keys(clusterAnchors).forEach((surname) => {
+                    if ((counts[surname] || 0) > 0) return;
+                    const anchor = clusterAnchors[surname];
+                    const dx = mx - anchor.cx, dy = my - anchor.cy;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist <= bestDist) { bestDist = dist; hovered = surname; }
+                });
+            }
             currentHighlight = hovered;
             applyHighlight(hovered);
             if (hovered) pauseForHover(); else resumeFromHover();
@@ -2109,8 +2149,16 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
             if (hovered) {
                 const colorIdx = sim.colorIndexFor(hovered);
                 const color = colorIdx >= 0 ? slotColor(colorIdx) : otherColor();
-                const share = counts[hovered] / (sim.size || 1);
-                individualTooltip.innerHTML = '<div class="row"><span class="swatch" style="background:' + color + '"></span>' + surnameLabel(hovered) + ': ' + formatPct(share) + '</div>';
+                const share = (counts[hovered] || 0) / (sim.size || 1);
+                let html = '<div class="row"><span class="swatch" style="background:' + color + '"></span>' + surnameLabel(hovered) + ': ' + formatPct(share) + '</div>';
+                // Extinct surnames get a second line showing the highest
+                // share they ever reached, since "Extinct" alone loses that
+                // history — see Population.prototype.recordChartFrame's
+                // running maxShare tracker.
+                if (share === 0) {
+                    html += '<div><strong>' + t('maxDiffusionLabel') + ':</strong> ' + formatPct(sim.maxShare[hovered] || 0) + '</div>';
+                }
+                individualTooltip.innerHTML = html;
                 individualTooltip.style.display = 'block';
                 const tw = individualTooltip.offsetWidth;
                 let left = mx + 12;
@@ -2264,7 +2312,6 @@ const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0
 
         document.getElementById('stabilityContinueBtn').addEventListener('click', () => {
             document.getElementById('stabilityBanner').classList.remove('visible');
-            sim.checkpointed = false;
             playing = true;
             renderPlayPauseBtn();
             startTimer();
