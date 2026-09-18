@@ -1,0 +1,1679 @@
+        document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+        // ============================================================
+        // PORTED DATA — verbatim from dirdam.github.io/projects/evo/
+        // (surnames_us.js / surnames_es.js / surnames_ja.js / chances.js)
+        // ============================================================
+        const SURNAME_DATA = {
+    us: {"SMITH":2501922,"JOHNSON":2014470,"WILLIAMS":1738413,"JONES":1544427,"BROWN":1544427,"DAVIS":1193760,"MILLER":1054488,"WILSON":843093,"MOORE":775944,"TAYLOR":773457,"ANDERSON":773457,"THOMAS":773457,"JACKSON":770970,"WHITE":693873,"HARRIS":683925,"MARTIN":678951,"THOMPSON":669003,"GARCIA":631698,"MARTINEZ":581958,"ROBINSON":579471,"CLARK":574497,"RODRIGUEZ":569523,"LEWIS":562062,"LEE":547140,"WALKER":544653,"HALL":497400,"ALLEN":494913,"YOUNG":479991,"HERNANDEZ":477504,"KING":472530,"WRIGHT":470043,"LOPEZ":465069,"HILL":465069,"SCOTT":460095,"GREEN":455121,"ADAMS":432738,"BAKER":425277,"GONZALEZ":412842,"NELSON":402894,"CARTER":402894,"MITCHELL":397920,"PEREZ":385485,"ROBERTS":380511,"TURNER":378024,"PHILLIPS":370563,"CAMPBELL":370563,"PARKER":363102,"EVANS":350667,"EDWARDS":340719,"COLLINS":333258,"STEWART":330771,"SANCHEZ":323310,"MORRIS":310875,"ROGERS":305901,"REED":303414,"COOK":298440,"MORGAN":293466,"BELL":290979,"MURPHY":290979,"BAILEY":286005,"RIVERA":281031,"COOPER":281031,"RICHARDSON":278544,"COX":273570,"HOWARD":273570,"WARD":268596,"TORRES":268596,"PETERSON":266109,"GRAY":263622,"RAMIREZ":261135,"JAMES":261135,"WATSON":256161,"BROOKS":256161,"KELLY":253674,"SANDERS":248700,"PRICE":246213,"BENNETT":246213,"WOOD":243726,"BARNES":241239,"ROSS":238752,"HENDERSON":236265,"COLEMAN":236265,"JENKINS":236265,"PERRY":233778,"POWELL":231291,"LONG":228804,"PATTERSON":228804,"HUGHES":228804,"FLORES":228804,"WASHINGTON":228804,"BUTLER":226317,"SIMMONS":226317,"FOSTER":226317,"GONZALES":216369,"BRYANT":216369,"ALEXANDER":211395,"RUSSELL":211395,"GRIFFIN":208908,"DIAZ":208908,"HAYES":206421,"MYERS":206421,"FORD":203934,"HAMILTON":203934,"GRAHAM":203934,"SULLIVAN":201447,"WALLACE":201447,"WOODS":198960,"COLE":198960,"WEST":198960,"JORDAN":193986,"OWENS":193986,"REYNOLDS":193986,"FISHER":191499,"ELLIS":191499,"HARRISON":189012,"GIBSON":186525,"MCDONALD":186525,"CRUZ":186525,"MARSHALL":186525,"ORTIZ":186525,"GOMEZ":186525,"MURRAY":184038,"FREEMAN":184038,"WELLS":181551,"WEBB":179064,"SIMPSON":174090,"STEVENS":174090,"TUCKER":174090,"PORTER":171603,"HUNTER":171603,"HICKS":171603,"CRAWFORD":169116,"HENRY":169116,"BOYD":169116,"MASON":169116,"MORALES":166629,"KENNEDY":166629,"WARREN":166629,"DIXON":164142,"RAMOS":164142,"REYES":164142,"BURNS":161655,"GORDON":161655,"SHAW":161655,"HOLMES":161655,"RICE":159168,"ROBERTSON":159168,"HUNT":156681,"BLACK":156681,"DANIELS":154194,"PALMER":154194,"MILLS":151707,"NICHOLS":149220,"GRANT":149220,"KNIGHT":149220,"FERGUSON":146733,"ROSE":146733,"STONE":146733,"HAWKINS":146733,"DUNN":144246,"PERKINS":144246,"HUDSON":144246,"SPENCER":141759,"GARDNER":141759,"STEPHENS":141759,"PAYNE":141759,"PIERCE":139272,"BERRY":139272,"MATTHEWS":139272,"ARNOLD":139272,"WAGNER":136785,"WILLIS":136785,"RAY":136785,"WATKINS":136785,"OLSON":136785,"CARROLL":136785,"DUNCAN":136785,"SNYDER":136785,"HART":134298,"CUNNINGHAM":134298,"BRADLEY":134298,"LANE":134298,"ANDREWS":134298,"RUIZ":134298,"HARPER":134298,"FOX":131811,"RILEY":131811,"ARMSTRONG":131811,"CARPENTER":131811,"WEAVER":131811,"GREENE":131811,"LAWRENCE":129324,"ELLIOTT":129324,"CHAVEZ":129324,"SIMS":129324,"AUSTIN":129324,"PETERS":129324,"KELLEY":129324,"FRANKLIN":126837,"LAWSON":126837},
+    es: {"GARCÍA":900620,"FERNÁNDEZ":549753,"GONZÁLEZ":540808,"LÓPEZ":519399,"RODRÍGUEZ":516253,"MARTÍNEZ":500883,"SÁNCHEZ":480486,"PÉREZ":463590,"MARTÍN":307603,"GÓMEZ":289940,"RUIZ":219079,"DÍAZ":198041,"HERNÁNDEZ":197272,"JIMÉNEZ":194247,"ÁLVAREZ":172137,"MORENO":171245,"MUÑOZ":157992,"ALONSO":127132,"ROMERO":114443,"GUTIÉRREZ":112304,"NAVARRO":101710,"TORRES":89264,"GIL":88206,"DOMÍNGUEZ":86934,"VÁZQUEZ":83048,"SERRANO":78899,"RAMOS":78358,"BLANCO":75107,"SANZ":67430,"CASTRO":66550,"SUÁREZ":66427,"ORTEGA":66373,"MOLINA":65070,"RUBIO":64309,"RAMÍREZ":64169,"DELGADO":63634,"MORALES":62723,"ORTIZ":61099,"MARÍN":55136,"SANTOS":51241,"IGLESIAS":50978,"CASTILLO":49311,"GARRIDO":48583,"NÚÑEZ":47862,"CRUZ":47834,"CALVO":46201,"DÍEZ":45527,"LOZANO":45268,"PRIETO":44643,"CANO":43657,"VIDAL":43633,"MEDINA":43413,"PEÑA":41800,"SAN":41346,"GALLEGO":41228,"LEÓN":40791,"VEGA":40375,"PASCUAL":40241,"GUERRERO":40087,"FERRER":38076,"HERRERO":37879,"MÉNDEZ":37823,"NIETO":35556,"CORTÉS":35454,"VICENTE":35428,"IBÁÑEZ":35386,"FUENTES":35237,"CABALLERO":34702,"CAMPOS":34525,"MÁRQUEZ":34348,"HERRERA":34045,"CARRASCO":33918,"GIMÉNEZ":33379,"CABRERA":32198,"LORENZO":32144,"MONTERO":32084,"SÁEZ":32003,"PASTOR":31044,"ESTEBAN":30864,"AGUILAR":30657,"MIGUEL":30597,"HIDALGO":30479,"SOLER":30336,"CRESPO":30164,"FLORES":29715,"MORA":29680,"DURÁN":29148,"ARIAS":28653,"VELASCO":28597,"ANDRÉS":28128,"ROMÁN":27287,"REYES":26671,"BRAVO":26538,"MOYA":26422,"SANTANA":26372,"IZQUIERDO":26343,"MARTÍ":26340,"MERINO":26297,"PARDO":26040,"REY":25737,"SOTO":25260,"CARMONA":25232,"REDONDO":25105,"PARRA":24694,"BENÍTEZ":24649,"VILA":24571,"BENITO":24539,"CASADO":24335,"ARROYO":24250,"MARCOS":24081,"SIERRA":23684,"GALLARDO":23566,"FUENTE":23406,"GRACIA":22829,"GALÁN":22715,"ESPINOSA":22655,"JUAN":22615,"MONTES":22503,"SEGURA":22440,"OTERO":22074,"LARA":22067,"FRANCO":22054,"SORIANO":22026,"SANTIAGO":21927,"MENÉNDEZ":21881,"VALLE":21577,"RIVAS":21419,"VALERO":21249,"LUQUE":21135,"MATEO":20995,"TORRE":20883,"SERRA":20746,"BUENO":20596,"RÍOS":20482,"PALACIOS":20478,"VILLAR":20442,"RÍO":20437,"ROBLES":20190,"VERA":19955,"GUERRA":19876,"APARICIO":19637,"CAMACHO":19583,"ROCA":19558,"CARRILLO":19507,"RIVERA":19437,"BERNAL":19422,"PONS":19404,"POZO":19337,"ABAD":19272,"TOMAS":19195,"CASAS":19168,"MATEOS":19052,"BELTRÁN":18980,"EXPÓSITO":18576,"ROLDÁN":18501,"RICO":18411,"SANCHO":18387,"VARELA":18348,"BLÁZQUEZ":18336,"CUESTA":18301,"VARGAS":18223,"ROJAS":18199,"GUILLÉN":18170,"PLAZA":18118,"SANTAMARÍA":18106,"BLASCO":18020,"LÁZARO":17938,"ESCUDERO":17852,"QUINTANA":17798,"COSTA":17751,"CONDE":17531,"VILLANUEVA":17414,"MIRANDA":16605,"ROSA":16588,"ARANDA":16490,"SALVADOR":16472,"MAS":16400,"ANTÓN":16382,"SALAS":16375,"SIMÓN":16295,"MILLÁN":16238,"MACÍAS":16150,"GÁLVEZ":16012,"AGUILERA":16005,"RIVERO":15981,"PUIG":15971,"RODRIGO":15907,"SILVA":15875,"ESTÉVEZ":15788,"BERMEJO":15575,"CONTRERAS":15515,"MARCO":15487,"GIMENO":15401,"MENDOZA":15308,"JURADO":15295,"CALDERÓN":15177,"RUEDA":15046,"CAMPO":15006,"MANZANO":15002,"DOMINGO":14990},
+    ja: {"佐藤":1880000,"鈴木":1802000,"高橋":1416000,"田中":1340000,"伊藤":1078000,"渡辺":1067000,"山本":1054000,"中村":1048000,"小林":1031000,"加藤":890000,"吉田":832000,"山田":816000,"佐々木":676000,"山口":645000,"松本":629000,"井上":616000,"木村":578000,"林":547000,"斎藤":544000,"清水":533000,"山崎":484000,"森":467000,"池田":451000,"橋本":449000,"阿部":445000,"石川":428000,"山下":420000,"中島":402000,"石井":397000,"小川":397000,"前田":382000,"岡田":380000,"長谷川":378000,"藤田":375000,"後藤":373000,"近藤":370000,"村上":356000,"遠藤":334000,"青木":330000,"坂本":327000,"斉藤":324000,"福田":313000,"太田":311000,"西村":309000,"藤井":309000,"岡本":297000,"藤原":297000,"金子":296000,"三浦":296000,"中野":295000,"中川":291000,"原田":291000,"松田":289000,"竹内":287000,"小野":281000,"田村":280000,"中山":270000,"和田":267000,"石田":266000,"森田":261000,"上田":248000,"原":246000,"内田":245000,"柴田":243000,"酒井":240000,"宮崎":238000,"横山":237000,"高木":234000,"安藤":231000,"宮本":229000,"大野":221000,"小島":217000,"谷口":216000,"工藤":215000,"今井":213000,"高田":210000,"増田":209000,"丸山":209000,"杉山":207000,"村田":206000,"大塚":205000,"小山":204000,"新井":204000,"平野":203000,"藤本":203000,"河野":201000,"上野":200000,"武田":200000,"野口":199000,"松井":194000,"千葉":194000,"菅原":193000,"岩崎":192000,"久保":188000,"木下":188000,"佐野":186000,"野村":186000,"松尾":183000,"菊地":182000,"杉本":182000,"市川":181000,"古川":177000,"大西":177000,"島田":176000,"水野":174000,"桜井":173000,"高野":172000,"渡部":172000,"吉川":170000,"山内":164000,"西田":163000,"飯田":162000,"菊池":162000,"西川":161000,"小松":160000,"北村":158000,"安田":157000,"五十嵐":157000,"川口":155000,"平田":154000,"関":154000,"中田":153000,"久保田":152000,"東":151000,"服部":151000,"川崎":150000,"岩田":150000,"土屋":149000,"福島":149000,"本田":148000,"辻":148000,"樋口":148000,"田口":146000,"秋山":146000,"永井":146000,"山中":146000,"中西":145000,"吉村":145000,"川上":144000,"大橋":142000,"石原":142000,"松岡":141000,"浜田":141000,"馬場":141000,"森本":139000,"矢野":138000,"浅野":138000,"星野":138000,"松下":137000,"大久保":137000,"吉岡":136000,"小池":136000,"野田":134000,"荒木":132000,"松浦":131000,"熊谷":131000,"大谷":131000,"内藤":131000,"黒田":128000,"尾崎":127000,"川村":126000,"永田":126000,"望月":125000,"松村":125000,"堀":125000,"田辺":125000,"荒井":124000,"菅野":124000,"大島":124000,"平井":124000,"早川":123000,"西山":123000,"栗原":123000,"広瀬":122000,"横田":118000,"石橋":118000,"岩本":117000,"萩原":117000,"片山":117000,"関口":115000,"宮田":115000,"大石":114000,"本間":113000,"高山":112000,"須藤":112000,"岡崎":112000,"吉野":111000,"小田":111000,"伊東":110000,"鎌田":110000,"篠原":109000,"上原":109000,"小西":108000,"松原":108000,"福井":107000,"古賀":107000,"成田":107000,"大森":106000,"小泉":106000,"南":106000}
+};
+
+const DIE_CHANCE = {"0":0.0063,"1":0.0004,"2":0.0003,"3":0.0002,"4":0.0002,"5":0.0002,"6":0.0001,"7":0.0001,"8":0.0001,"9":0.0001,"10":0.0001,"11":0.0001,"12":0.0001,"13":0.0002,"14":0.0003,"15":0.0004,"16":0.0005,"17":0.0006,"18":0.0007,"19":0.0009,"20":0.001,"21":0.0012,"22":0.0013,"23":0.0013,"24":0.0013,"25":0.0013,"26":0.0014,"27":0.0014,"28":0.0014,"29":0.0015,"30":0.0015,"31":0.0015,"32":0.0016,"33":0.0016,"34":0.0017,"35":0.0017,"36":0.0018,"37":0.0019,"38":0.0019,"39":0.002,"40":0.0021,"41":0.0023,"42":0.0024,"43":0.0026,"44":0.0028,"45":0.0031,"46":0.0034,"47":0.0037,"48":0.0041,"49":0.0045,"50":0.005,"51":0.0055,"52":0.006,"53":0.0066,"54":0.0072,"55":0.0078,"56":0.0085,"57":0.0092,"58":0.0099,"59":0.0106,"60":0.0114,"61":0.0122,"62":0.0131,"63":0.0139,"64":0.0148,"65":0.0158,"66":0.017,"67":0.0183,"68":0.0198,"69":0.0214,"70":0.0234,"71":0.0255,"72":0.0279,"73":0.0304,"74":0.0331,"75":0.0363,"76":0.0399,"77":0.0439,"78":0.0483,"79":0.0531,"80":0.0587,"81":0.0651,"82":0.0721,"83":0.0799,"84":0.0885,"85":0.0981,"86":0.1089,"87":0.1209,"88":0.1341,"89":0.1487,"90":0.1645,"91":0.1816,"92":0.1999,"93":0.2193,"94":0.2399,"95":0.2603,"96":0.2801,"97":0.299,"98":0.3166,"99":0.3324,"100":0.349,"101":0.3665,"102":0.3848,"103":0.404,"104":0.4242,"105":0.4455,"106":0.4677,"107":0.4911,"108":0.5157,"109":0.5415,"110":0.5685,"111":0.597,"112":0.6268,"113":0.6581,"114":0.691,"115":0.7256,"116":0.7619,"117":0.8,"118":0.84,"119":0.882};
+
+        // ============================================================
+        // I18N — per-app copy of the shared convention (see flags/index.html)
+        // ============================================================
+        const I18N_STORAGE_KEY = 'dirdam-lang';
+        const SUPPORTED_LANGS = ['en', 'es', 'ja'];
+        const LANG_LABELS = { en: 'EN', es: 'ES', ja: '日本語' };
+
+        const STRINGS = {
+            en: {
+                browserTabTitle: 'Surnames',
+                pageTitle: 'Surnames Evolution',
+                subtitle: "Watch a population's family names spread, compete, and go extinct",
+                introHtml: 'Starting from a country\'s 200 most common surnames, a seeded population of <strong>2,000 people</strong> is simulated generation by generation &mdash; marrying, having children, and dying &mdash; until either one surname takes over, or the mix stays stable for a thousand years.',
+                howItWorksSummary: 'How it works',
+                howStepSeed: "It starts with 2,000 people, with each surname's share proportional to its real-world ranking.",
+                howStepAging: 'Every simulated year, everyone ages by one year.',
+                howStepMating: "People aged 15–35 may marry and have children — the more children a couple already has, the less likely they are to have another. Children inherit their father's surname.",
+                howStepMortality: "Everyone has a chance of dying each year, based on real death-rate-by-age data.",
+                howStepEnd: 'The simulation ends when either one surname takes over everyone, or a thousand years pass with the same surnames still around.',
+                conclusionText: "No matter how many surnames there are, if only the father's surname is ever passed down, there will always eventually come a day when just one remains.",
+                controlPlay: 'Play',
+                controlPause: 'Pause',
+                controlReset: 'Reset',
+                speedLabel: 'Speed',
+                speedSlow: 'Slow',
+                speedNormal: 'Normal',
+                speedFast: 'Fast',
+                speedTurbo: 'Turbo',
+                datasetUs: '\u{1F1FA}\u{1F1F8} US',
+                datasetEs: '\u{1F1EA}\u{1F1F8} ES',
+                datasetJa: '\u{1F1EF}\u{1F1F5} JA',
+                datasetChangeConfirmTitle: 'Change dataset?',
+                datasetChangeConfirmBody: 'Changing the dataset restarts the simulation.',
+                datasetChangeConfirmYes: 'Continue',
+                datasetChangeConfirmNo: 'Cancel',
+                tableViewToggle: 'Table view',
+                chartViewToggle: 'Chart view',
+                individualViewToggle: 'Individual view',
+                tableColYear: 'Year',
+                tableColPopulation: 'Population',
+                hudYearLabel: 'Years',
+                hudPopulationLabel: 'Population',
+                legendTitleOne: '{n} surname remaining',
+                legendTitleOther: '{n} surnames remaining',
+                legendOtherLabel: 'Other',
+                extinctLabel: 'Extinct',
+                maxDiffusionLabel: 'Max. diffusion',
+                leadingNowOne: 'Currently leading: {surname}',
+                dominanceBannerTitle: 'Simulation complete',
+                dominanceBannerBody: '{surname} has taken over the entire population.',
+                stabilityBannerTitle: 'Still going strong',
+                stabilityBannerBodyOne: 'The number of surnames has held steady at {n} for 1,000 years.',
+                stabilityBannerBodyOther: 'The number of surnames has held steady at {n} for 1,000 years.',
+                stabilityBannerContinue: 'Keep simulating',
+                stabilityBannerStop: 'Stop here',
+                overflowBannerTitle: 'Only {n} surnames remaining!',
+                overflowBannerBody: 'Every surname that used to be lumped into "Other" now has its own color in the chart and legend below.',
+                overflowBannerContinue: 'Continue',
+                cullToastText: '{reason} decimated the population.',
+                cullReason0: 'A meteorite',
+                cullReason1: 'A bomb',
+                cullReason2: 'Sudden death',
+                cullReason3: 'Ebola',
+                cullReason4: 'An alien attack',
+                seeMoreTools: 'See more tools',
+                viewSource: 'View source',
+            },
+            es: {
+                browserTabTitle: 'Apellidos',
+                pageTitle: 'Evolución de apellidos',
+                subtitle: 'Observa cómo los apellidos de una población se propagan, compiten y se extinguen',
+                introHtml: 'Empezando por los 200 apellidos más comunes de un país, se simula generación tras generación una población de <strong>2.000 personas</strong> &mdash; casándose, teniendo hijos y muriendo &mdash; hasta que un apellido se impone a todos, o la mezcla se mantiene estable durante mil años.',
+                howItWorksSummary: 'Cómo funciona',
+                howStepSeed: 'Empieza con 2.000 personas, donde la proporción de cada apellido es proporcional a su clasificación real.',
+                howStepAging: 'Cada año simulado, todos envejecen un año.',
+                howStepMating: 'Las personas de entre 15 y 35 años pueden casarse y tener hijos — cuantos más hijos tenga ya una pareja, menos probable es que tengan otro. Los hijos heredan el apellido del padre.',
+                howStepMortality: 'Cada persona tiene una probabilidad de morir cada año, basada en datos reales de mortalidad por edad.',
+                howStepEnd: 'La simulación termina cuando un apellido se impone a todos, o cuando pasan mil años sin que los apellidos actuales cambien.',
+                conclusionText: 'No importa cuántos apellidos haya: si solo se transmite el apellido paterno, siempre llegará un día en que quede uno solo.',
+                controlPlay: 'Reproducir',
+                controlPause: 'Pausar',
+                controlReset: 'Reiniciar',
+                speedLabel: 'Velocidad',
+                speedSlow: 'Lenta',
+                speedNormal: 'Normal',
+                speedFast: 'Rápida',
+                speedTurbo: 'Turbo',
+                datasetUs: '\u{1F1FA}\u{1F1F8} US',
+                datasetEs: '\u{1F1EA}\u{1F1F8} ES',
+                datasetJa: '\u{1F1EF}\u{1F1F5} JA',
+                datasetChangeConfirmTitle: '¿Cambiar de conjunto de datos?',
+                datasetChangeConfirmBody: 'Cambiar el conjunto de datos reinicia la simulación.',
+                datasetChangeConfirmYes: 'Continuar',
+                datasetChangeConfirmNo: 'Cancelar',
+                tableViewToggle: 'Ver tabla',
+                chartViewToggle: 'Ver gráfico',
+                individualViewToggle: 'Vista individual',
+                tableColYear: 'Año',
+                tableColPopulation: 'Población',
+                hudYearLabel: 'Años',
+                hudPopulationLabel: 'Población',
+                legendTitleOne: '{n} apellido restante',
+                legendTitleOther: '{n} apellidos restantes',
+                legendOtherLabel: 'Otros',
+                extinctLabel: 'Extinto',
+                maxDiffusionLabel: 'Difusión máx.',
+                leadingNowOne: 'Apellido líder: {surname}',
+                dominanceBannerTitle: 'Simulación completada',
+                dominanceBannerBody: '{surname} se ha impuesto a toda la población.',
+                stabilityBannerTitle: 'Sigue firme',
+                stabilityBannerBodyOne: 'El número de apellidos se ha mantenido en {n} durante 1.000 años.',
+                stabilityBannerBodyOther: 'El número de apellidos se ha mantenido en {n} durante 1.000 años.',
+                stabilityBannerContinue: 'Seguir simulando',
+                stabilityBannerStop: 'Detener aquí',
+                overflowBannerTitle: '¡Solo quedan {n} apellidos!',
+                overflowBannerBody: 'Cada apellido que antes estaba agrupado en "Otros" ahora tiene su propio color en el gráfico y en la leyenda de abajo.',
+                overflowBannerContinue: 'Continuar',
+                cullToastText: '{reason} diezmó a la población.',
+                cullReason0: 'Un meteorito',
+                cullReason1: 'Una bomba',
+                cullReason2: 'Una muerte súbita',
+                cullReason3: 'Ébola',
+                cullReason4: 'Un ataque alienígena',
+                seeMoreTools: 'Ver más herramientas',
+                viewSource: 'Ver código fuente',
+            },
+            ja: {
+                browserTabTitle: '名字',
+                pageTitle: '名字の進化',
+                subtitle: '人口の名字が広がり、競い合い、絶滅していく様子を観察します',
+                introHtml: 'ある国の最も一般的な200の名字から始め、<strong>2,000人</strong>の人口を世代ごとにシミュレーションします—結婚し、子供を持ち、死んでいきます—一つの名字が全てを支配するか、1000年間同じ名字が続くまで。',
+                howItWorksSummary: '使用方法',
+                howStepSeed: '2,000人の人口で始まり、各名字の割合は実際のランキングに対応しています。',
+                howStepAging: '1年が過ぎるごとに、皆が1歳年を取ります。',
+                howStepMating: '15歳から35歳の人は結婚して子供を持つことができます—既に子供が多いほど、次の子供を持つ可能性は低くなります。子供は父親の名字を継ぎます。',
+                howStepMortality: '各人の死亡率は、実際の年齢別死亡率データに基づいて計算されます。',
+                howStepEnd: 'シミュレーションは、一つの名字が全員を支配するか、1000年間名字の構成が変わらない場合に終了します。',
+                conclusionText: 'どんなに名字があっても、父親の名字だけが継承される場合、いつか必ず一つの名字しか残らない日が来ます。',
+                controlPlay: '再生',
+                controlPause: '一時停止',
+                controlReset: 'リセット',
+                speedLabel: '速度',
+                speedSlow: '遅い',
+                speedNormal: '普通',
+                speedFast: '速い',
+                speedTurbo: '高速',
+                datasetUs: '\u{1F1FA}\u{1F1F8} US',
+                datasetEs: '\u{1F1EA}\u{1F1F8} ES',
+                datasetJa: '\u{1F1EF}\u{1F1F5} JA',
+                datasetChangeConfirmTitle: 'データセットを変更しますか？',
+                datasetChangeConfirmBody: 'データセットを変更するとシミュレーションが再開されます。',
+                datasetChangeConfirmYes: '続ける',
+                datasetChangeConfirmNo: 'キャンセル',
+                tableViewToggle: '表で見る',
+                chartViewToggle: 'グラフで見る',
+                individualViewToggle: '個人ビュー',
+                tableColYear: '年',
+                tableColPopulation: '人口',
+                hudYearLabel: '経過年数',
+                hudPopulationLabel: '人口',
+                legendTitleOne: '残り{n}個の名字',
+                legendTitleOther: '残り{n}個の名字',
+                legendOtherLabel: 'その他',
+                extinctLabel: '絶滅',
+                maxDiffusionLabel: '最大拡散率',
+                leadingNowOne: '現在の首位：{surname}',
+                dominanceBannerTitle: 'シミュレーション終了',
+                dominanceBannerBody: '{surname}が全人口を支配しました。',
+                stabilityBannerTitle: '安定継続中',
+                stabilityBannerBodyOne: '名字の数が{n}のまま1000年間変わっていません。',
+                stabilityBannerBodyOther: '名字の数が{n}のまま1000年間変わっていません。',
+                stabilityBannerContinue: '続ける',
+                stabilityBannerStop: 'ここで止める',
+                overflowBannerTitle: '残り{n}個の名字！',
+                overflowBannerBody: 'これまで「その他」にまとめられていた名字が、下のグラフと凡例でそれぞれ専用の色を持つようになりました。',
+                overflowBannerContinue: '続ける',
+                cullToastText: '{reason}が人口を激減させました。',
+                cullReason0: '隕石',
+                cullReason1: '爆弾',
+                cullReason2: '突然死',
+                cullReason3: 'エボラ',
+                cullReason4: '宇宙人の攻撃',
+                seeMoreTools: '他のツールを見る',
+                viewSource: 'ソースを見る',
+            },
+        };
+
+        function detectInitialLang() {
+            const urlLang = new URLSearchParams(location.search).get('lang');
+            if (SUPPORTED_LANGS.includes(urlLang)) return urlLang;
+            const stored = localStorage.getItem(I18N_STORAGE_KEY);
+            if (SUPPORTED_LANGS.includes(stored)) return stored;
+            const browserLang = (navigator.language || 'en').slice(0, 2);
+            return SUPPORTED_LANGS.includes(browserLang) ? browserLang : 'en';
+        }
+
+        let currentLang = detectInitialLang();
+        const langChangeListeners = [];
+
+        function getLang() { return currentLang; }
+
+        function setLang(lang) {
+            if (!SUPPORTED_LANGS.includes(lang) || lang === currentLang) return;
+            currentLang = lang;
+            localStorage.setItem(I18N_STORAGE_KEY, lang);
+            document.documentElement.lang = lang;
+            applyStaticDict();
+            langChangeListeners.forEach((fn) => fn(lang));
+        }
+
+        function onLangChange(fn) { langChangeListeners.push(fn); }
+
+        function t(key) {
+            return STRINGS[currentLang]?.[key] ?? STRINGS.en?.[key] ?? key;
+        }
+
+        function tFmt(key, params) {
+            let s = t(key);
+            Object.entries(params || {}).forEach(([k, v]) => { s = s.replace('{' + k + '}', v); });
+            return s;
+        }
+
+        // Locale-aware decimal formatting (e.g. "1.09" in English, "1,09" in
+        // Spanish) — every number with a fractional part shown in the UI
+        // should go through this rather than a raw template-literal join.
+        const NUMBER_LOCALE = { en: 'en-US', es: 'es-ES', ja: 'ja-JP' };
+        function formatDecimal(n, maxFractionDigits) {
+            return new Intl.NumberFormat(NUMBER_LOCALE[currentLang] || 'en-US', {
+                maximumFractionDigits: maxFractionDigits,
+                minimumFractionDigits: 0,
+            }).format(n);
+        }
+
+        // Every displayed share (legend, tooltip, table) goes through this:
+        // a 0..1 fraction becomes a fixed 2-decimal percentage (not just
+        // "up to 2" — formatDecimal's trimming would drop a trailing zero,
+        // e.g. show "2.1%" instead of "2.10%"), except an exact 0.00% reads
+        // as "Extinct" rather than a bare zero.
+        function formatPct(share) {
+            const pct = Math.round(share * 10000) / 100;
+            if (pct === 0) return t('extinctLabel');
+            return new Intl.NumberFormat(NUMBER_LOCALE[currentLang] || 'en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }).format(pct) + '%';
+        }
+
+        function applyStaticDict() {
+            document.querySelectorAll('[data-i18n-html]').forEach((el) => {
+                el.innerHTML = t(el.getAttribute('data-i18n-html'));
+            });
+            document.querySelectorAll('[data-i18n]').forEach((el) => {
+                const val = t(el.getAttribute('data-i18n'));
+                const attr = el.getAttribute('data-i18n-attr');
+                attr ? el.setAttribute(attr, val) : (el.textContent = val);
+            });
+        }
+
+        const langToggleContainer = document.getElementById('langToggle');
+        function renderLangToggle() {
+            langToggleContainer.innerHTML = '';
+            SUPPORTED_LANGS.forEach((lang) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = LANG_LABELS[lang] || lang.toUpperCase();
+                btn.setAttribute('aria-label', `Switch language to ${lang}`);
+                btn.setAttribute('aria-pressed', String(lang === getLang()));
+                btn.addEventListener('click', () => setLang(lang));
+                langToggleContainer.appendChild(btn);
+            });
+        }
+        onLangChange(renderLangToggle);
+
+        // ============================================================
+        // DATASET — independent from UI language (see plan rationale:
+        // dataset is "what's being simulated", language is "how it reads").
+        // ============================================================
+        const DATASET_STORAGE_KEY = 'surnames-dataset';
+        const SUPPORTED_DATASETS = ['us', 'es', 'ja'];
+        const DATASET_KEYS = { us: 'datasetUs', es: 'datasetEs', ja: 'datasetJa' };
+
+        function detectInitialDataset() {
+            const stored = localStorage.getItem(DATASET_STORAGE_KEY);
+            if (SUPPORTED_DATASETS.includes(stored)) return stored;
+            return SUPPORTED_DATASETS.includes(currentLang) ? currentLang : 'us';
+        }
+
+        let currentDataset = detectInitialDataset();
+
+        const datasetToggleContainer = document.getElementById('datasetToggle');
+        function renderDatasetToggle() {
+            datasetToggleContainer.innerHTML = '';
+            SUPPORTED_DATASETS.forEach((ds) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = t(DATASET_KEYS[ds]);
+                btn.setAttribute('aria-pressed', String(ds === currentDataset));
+                btn.addEventListener('click', () => requestDatasetChange(ds));
+                datasetToggleContainer.appendChild(btn);
+            });
+        }
+        onLangChange(renderDatasetToggle);
+
+        function requestDatasetChange(ds) {
+            if (ds === currentDataset) return;
+            if (sim.year === 0) {
+                applyDatasetChange(ds);
+                return;
+            }
+            pendingDataset = ds;
+            document.getElementById('datasetConfirm').classList.add('visible');
+        }
+
+        function applyDatasetChange(ds) {
+            currentDataset = ds;
+            localStorage.setItem(DATASET_STORAGE_KEY, ds);
+            renderDatasetToggle();
+            resetSimulation();
+        }
+
+        let pendingDataset = null;
+        document.getElementById('datasetConfirmYes').addEventListener('click', () => {
+            document.getElementById('datasetConfirm').classList.remove('visible');
+            if (pendingDataset) applyDatasetChange(pendingDataset);
+            pendingDataset = null;
+        });
+        document.getElementById('datasetConfirmNo').addEventListener('click', () => {
+            document.getElementById('datasetConfirm').classList.remove('visible');
+            pendingDataset = null;
+            renderDatasetToggle();
+        });
+
+        // ============================================================
+        // SIMULATION ENGINE — a faithful port of the original evo.js
+        // (fully de-obfuscated and read before porting; see the plan doc
+        // for the exact derivation). Every constant/formula below matches
+        // the original exactly, including its quirks — this isn't a
+        // reinterpretation, it's the same simulation with a new UI.
+        // ============================================================
+        const BASE_BABY_PROBABILITY = 0.605;
+        const COUPLE_PROBABILITY = 0.9;
+        const YEARS_STABLE = 1000;
+        const CULL_REASONS = ['cullReason0', 'cullReason1', 'cullReason2', 'cullReason3', 'cullReason4'];
+        // Not part of the original port above — the seed population size,
+        // which the safety valve's thresholds below scale with.
+        const INITIAL_POPULATION = 2000;
+        // Once the number of currently-alive surnames GLOBALLY (locked +
+        // "Other" combined) drops to this many or fewer, promote everyone
+        // still in "Other" to their own individually-charted/hoverable slot
+        // instead of staying lumped into the aggregate band — regardless of
+        // how that count splits between locked and "Other" (e.g. 15 locked +
+        // 5 "Other", or 1 locked + 19 "Other"). There's no separate color
+        // range reserved for the promoted ones — see
+        // Population.prototype.colorIndexFor — they reuse locked slots whose
+        // original surname has since gone extinct, falling back to (rare,
+        // worst-case) duplicate colors.
+        const OVERFLOW_PROMOTE_THRESHOLD = 20;
+
+        function Person(surname, sex, age, generation) {
+            this.surname = surname;
+            this.sex = sex;
+            this.age = age;
+            this.fertile = false;
+            this.alive = true;
+            this.generation = generation;
+            this.childrenCount = 0;
+            this.partner = null;
+            // Individual view: a permanent, stable position within this
+            // person's surname cluster, assigned once at birth and never
+            // reassigned — see renderIndividualView(). sqrt() on the radius
+            // fraction gives a uniform (not center-clumped) fill of a disk.
+            this.dotAngle = Math.random() * Math.PI * 2;
+            this.dotRadiusFrac = Math.sqrt(Math.random());
+        }
+
+        Person.prototype.becomeOlder = function () {
+            this.age += 1;
+            if (this.age === 120 || Math.random() < DIE_CHANCE[this.age]) {
+                this.alive = false;
+            }
+            if (this.alive) {
+                this.fertile = this.age >= 15 && this.age <= 35;
+            }
+        };
+
+        Person.prototype.marry = function (other) {
+            this.partner = other;
+            other.partner = this;
+            // Note: the original's surname_override feature is hard-disabled
+            // (always false) even in the source app, so marriage never
+            // renames either partner — preserved as-is.
+        };
+
+        function Population(size) {
+            this.size = size;
+            this.people = [];
+            this.year = 0;
+            this.surnameCount = 0;
+            this.babyProbability = BASE_BABY_PROBABILITY;
+            this.surnameCountHistory = [];
+            this.chartHistory = [];
+            this.wasAdjusted = false;
+            // The "held steady for 1000 years" banner offers a one-time
+            // choice (keep simulating or stop here) — once shown, it's
+            // never shown again for this run regardless of which button
+            // gets clicked (see checkEnd() and stabilityContinueBtn).
+            this.checkpointed = false;
+            this.lockedSlots = null;
+            // Surnames promoted out of "Other" — see maybePromoteOverflow().
+            // A one-time snapshot: once set, never reassigned or grown,
+            // just like lockedSlots (a surname can only go extinct, never
+            // reappear, so the overflow tail only ever shrinks).
+            this.promotedSlots = [];
+            // promoted surname -> reused color-slot index (0-19).
+            this.promotedColorIndex = {};
+            // Set to the alive-surname count by maybePromoteOverflow() the
+            // tick it promotes; checkEnd() consumes it once to surface the
+            // banner, then clears it back to false.
+            this.overflowBannerPending = false;
+            this.ended = false;
+            // surname -> highest share it's ever reached, updated every
+            // recordChartFrame() — kept as a running max rather than
+            // scanning chartHistory, since that gets thinned over long
+            // runs (see recordChartFrame) and could miss the true peak.
+            this.maxShare = {};
+        }
+
+        Population.prototype.generate = function (datasetKey) {
+            const dict = SURNAME_DATA[datasetKey];
+            const total = Object.values(dict).reduce((a, b) => a + b, 0);
+            Object.keys(dict).forEach((surname) => {
+                const share = dict[surname] / total;
+                // Floor at 2 so a small-population run doesn't round a
+                // low-share surname down to 0 (never appears) or 1
+                // (trivially/instantly extinct) — every dataset surname
+                // gets a fighting chance regardless of how low the seed
+                // population is tuned.
+                const count = Math.max(2, Math.round(this.size * share));
+                for (let i = 0; i < count; i++) {
+                    const sex = Math.random() < 0.5 ? 0 : 1;
+                    const age = Math.floor(Math.random() * 80);
+                    this.people.push(new Person(surname, sex, age, 1));
+                }
+            });
+            this.updateSurnameCount();
+            this.lockTopSlots();
+        };
+
+        Population.prototype.lockTopSlots = function () {
+            const counts = this.getSurnameCounts();
+            const ranked = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+            this.lockedSlots = ranked.slice(0, 20);
+        };
+
+        // One-time snapshot: the moment the number of currently-alive
+        // surnames GLOBALLY (locked + "Other") drops to
+        // <= OVERFLOW_PROMOTE_THRESHOLD, promote everyone still in "Other"
+        // at once. After that "Other" is empty for good — nothing is left to
+        // promote later, since surnames only ever go extinct, never reappear.
+        Population.prototype.maybePromoteOverflow = function (counts) {
+            if (this.promotedSlots.length > 0) return;
+            const aliveSurnames = Object.keys(counts);
+            if (aliveSurnames.length > OVERFLOW_PROMOTE_THRESHOLD) return;
+            const lockedSlots = this.lockedSlots || [];
+            const lockedSet = new Set(lockedSlots);
+            const overflowAlive = aliveSurnames.filter((s) => !lockedSet.has(s));
+            if (overflowAlive.length === 0) return;
+            // Reuse a locked slot whose original surname has already gone
+            // extinct — by this point in the simulation there usually are
+            // enough. If not, cycle through all 20 slots regardless
+            // (accepting duplicate colors in this rare worst case).
+            const extinctLockedIndices = lockedSlots
+                .map((surname, i) => (counts[surname] ? -1 : i))
+                .filter((i) => i >= 0);
+            const pool = extinctLockedIndices.length > 0 ? extinctLockedIndices : lockedSlots.map((_, i) => i);
+            this.promotedSlots = overflowAlive;
+            overflowAlive.forEach((surname, i) => {
+                this.promotedColorIndex[surname] = pool[i % pool.length];
+            });
+            // Flag for checkEnd() to pick up on this same tick and surface
+            // the "only N surnames remaining" banner, pausing for the user.
+            this.overflowBannerPending = aliveSurnames.length;
+        };
+
+        // A surname's dedicated color-slot index (0-19), or -1 if it has
+        // none (still lumped into "Other").
+        Population.prototype.colorIndexFor = function (surname) {
+            const lockedIdx = (this.lockedSlots || []).indexOf(surname);
+            if (lockedIdx >= 0) return lockedIdx;
+            return Object.prototype.hasOwnProperty.call(this.promotedColorIndex, surname)
+                ? this.promotedColorIndex[surname]
+                : -1;
+        };
+
+        Population.prototype.shuffle = function () {
+            const arr = this.people;
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+        };
+
+        Population.prototype.createCouples = function () {
+            for (let i = 0; i < this.people.length - 1; i++) {
+                const a = this.people[i];
+                const b = this.people[i + 1];
+                if (!a.partner && !b.partner && a.sex !== b.sex && a.fertile && b.fertile) {
+                    const ageDiff = Math.abs(a.age - b.age) + 1;
+                    if (Math.random() / ageDiff < COUPLE_PROBABILITY) {
+                        a.marry(b);
+                    }
+                }
+            }
+        };
+
+        Population.prototype.tryBabies = function () {
+            for (let i = 0; i < this.people.length; i++) {
+                const p = this.people[i];
+                if (p.sex === 1 && p.partner && p.fertile) {
+                    const prob = this.babyProbability / Math.pow(p.childrenCount + 1, 2);
+                    if (Math.random() < prob) {
+                        p.childrenCount += 1;
+                        const sex = Math.random() < 0.5 ? 0 : 1;
+                        this.people.push(new Person(p.partner.surname, sex, 0, p.generation + 1));
+                    }
+                }
+            }
+        };
+
+        Population.prototype.removeDeaths = function () {
+            this.people = this.people.filter((p) => p.alive);
+        };
+
+        Population.prototype.getSurnameCounts = function () {
+            const counts = {};
+            for (let i = 0; i < this.people.length; i++) {
+                const s = this.people[i].surname;
+                counts[s] = (counts[s] || 0) + 1;
+            }
+            return counts;
+        };
+
+        Population.prototype.updateSurnameCount = function () {
+            this.surnameCount = Object.keys(this.getSurnameCounts()).length;
+        };
+
+        Population.prototype.recordChartFrame = function () {
+            const counts = this.getSurnameCounts();
+            this.maybePromoteOverflow(counts);
+            const total = this.people.length || 1;
+            const trackedSet = new Set([...(this.lockedSlots || []), ...this.promotedSlots]);
+            // Shares are recorded for every currently-alive surname (not just
+            // the tracked/charted slots) so the table view can list all of
+            // them historically instead of lumping the rest into "Other" —
+            // the chart itself still only reads the tracked-slot entries.
+            const shares = {};
+            let trackedTotal = 0;
+            Object.keys(counts).forEach((surname) => {
+                const share = counts[surname] / total;
+                shares[surname] = share;
+                if (trackedSet.has(surname)) trackedTotal += share;
+                if (!this.maxShare[surname] || share > this.maxShare[surname]) this.maxShare[surname] = share;
+            });
+            const other = Math.max(0, 1 - trackedTotal);
+            this.chartHistory.push({ year: this.year, population: this.people.length, shares, other });
+            // Bound memory: once long, keep every 2nd, then every 4th entry.
+            if (this.chartHistory.length > 900) {
+                this.chartHistory = this.chartHistory.filter((_, i) => i % 2 === 0);
+            }
+        };
+
+        Population.prototype.passYear = function () {
+            this.makeOlder();
+            this.shuffle();
+            this.createCouples();
+            this.tryBabies();
+            this.removeDeaths();
+            this.updateSurnameCount();
+            this.size = this.people.length;
+            this.year += 1;
+            this.surnameCountHistory.push(this.surnameCount);
+            this.recordChartFrame();
+        };
+
+        Population.prototype.makeOlder = function () {
+            for (let i = 0; i < this.people.length; i++) this.people[i].becomeOlder();
+        };
+
+        // Population safety valve — silent by default (matches the original,
+        // which only ever console.log'd this), except the rare hard cull,
+        // which gets a toast because its flavor text was too fun to waste.
+        Population.prototype.birthControl = function (onCull) {
+            if (this.size > INITIAL_POPULATION * 4) {
+                this.people = this.people.slice(0, Math.floor(this.people.length / 4));
+                const reasonKey = CULL_REASONS[Math.floor(Math.random() * CULL_REASONS.length)];
+                if (onCull) onCull(reasonKey);
+            }
+            if (!this.wasAdjusted) {
+                if (this.size > INITIAL_POPULATION * 2) {
+                    this.babyProbability = BASE_BABY_PROBABILITY - 0.015;
+                    this.wasAdjusted = true;
+                } else if (this.size < INITIAL_POPULATION * 0.5) {
+                    this.babyProbability = BASE_BABY_PROBABILITY + 0.015;
+                    this.wasAdjusted = true;
+                }
+            } else if (Math.abs(this.size - INITIAL_POPULATION) < INITIAL_POPULATION * 0.1) {
+                this.babyProbability = BASE_BABY_PROBABILITY;
+                this.wasAdjusted = false;
+            }
+        };
+
+        // Returns null | {type:'dominance', surname} | {type:'stability', n}
+        Population.prototype.checkEnd = function () {
+            if (this.surnameCount === 1) {
+                this.ended = true;
+                return { type: 'dominance', surname: this.people[0] ? this.people[0].surname : '' };
+            }
+            if (this.overflowBannerPending) {
+                const n = this.overflowBannerPending;
+                this.overflowBannerPending = false;
+                return { type: 'overflow', n };
+            }
+            if (this.checkpointed) return null; // already offered once this run — never again
+            const counts = this.getSurnameCounts();
+            const total = this.people.length || 1;
+            let minPct = 50;
+            Object.values(counts).forEach((c) => { minPct = Math.min(minPct, 100 * c / total); });
+            const h = this.surnameCountHistory;
+            if (h.length > YEARS_STABLE && h[h.length - 1] === h[h.length - 1 - YEARS_STABLE] && minPct > 5) {
+                this.checkpointed = true;
+                return { type: 'stability', n: this.surnameCount };
+            }
+            return null;
+        };
+
+        // ============================================================
+        // COLOR SLOTS — 20 total, locked once assigned, never reassigned.
+        // Slot 0-19 is assigned to a locked surname at generate(); a
+        // surname promoted out of "Other" later (see maybePromoteOverflow)
+        // reuses one of these same 20 slots rather than a new range, via
+        // Population.prototype.colorIndexFor.
+        // ============================================================
+        const SLOT_VARS = Array.from({ length: 20 }, (_, i) => `--series-${i + 1}`);
+        function slotColor(index) {
+            const varName = SLOT_VARS[index] || '--series-other';
+            return getComputedStyle(document.getElementById('chartSvgWrap')).getPropertyValue(varName).trim();
+        }
+        function otherColor() {
+            return getComputedStyle(document.getElementById('chartSvgWrap')).getPropertyValue('--series-other').trim();
+        }
+
+        // ============================================================
+        // RENDERING
+        // ============================================================
+        const svg = document.getElementById('chartSvg');
+        const tooltip = document.getElementById('chartTooltip');
+        const legendList = document.getElementById('legendList');
+        const legendTitleEl = document.getElementById('legendTitle');
+        const leadingNowEl = document.getElementById('leadingNow');
+        const hudYear = document.getElementById('hudYear');
+        const hudPopulation = document.getElementById('hudPopulation');
+        const VIEW_W = 1000, VIEW_H = 360;
+        const CENTURY_YEARS = 100;
+
+        // Hover-focus state: the currently spotlighted surname (or null for
+        // none). Re-applied at the end of every renderChart() too, since the
+        // chart's <path> elements are rebuilt from scratch each tick and
+        // would otherwise lose their dimmed/focused opacity while playing.
+        let currentHighlight = null;
+        let lastCumulative = [];
+        // Surnames still mid-reveal after an overflow promotion (or null
+        // when inactive) — set the moment promotion happens (see the
+        // 'overflow' branch in tick()), not just when the banner is
+        // dismissed, since the legend isn't covered by the banner and would
+        // otherwise flash its real color early. While a surname is in this
+        // set, renderChart()/renderLegend() deliberately paint it with
+        // otherColor() (its old "Other" gray) instead of its real slot
+        // color, so it looks unchanged the whole time the banner is up;
+        // startPromotionReveal() then flips the same DOM nodes to their
+        // real color once "Continue" is clicked, letting the CSS
+        // `fill`/background-color transition animate gray fading into
+        // color. Ticking is paused for the whole reveal window (see
+        // startPromotionReveal), so there's no renderChart() re-run to
+        // worry about clobbering the flip.
+        let revealingSurnames = null;
+
+        function surnameLabel(surname) {
+            return surname;
+        }
+
+        function applyHighlight(surname) {
+            svg.querySelectorAll('.area').forEach((path) => {
+                path.style.opacity = surname ? (path.dataset.surname === surname ? '1' : '0.2') : '';
+            });
+            // Mirror the focus in the legend too — including "Other", same
+            // as the chart — so hovering a chart band shows that surname's
+            // exact percentage at a glance without hunting through the list.
+            legendList.querySelectorAll('li').forEach((li) => {
+                li.classList.toggle('dimmed', !!surname && li.dataset.surname !== surname);
+            });
+            // ...and the table view's row, if it's the visible one.
+            chartTable.querySelectorAll('tr[data-surname]').forEach((tr) => {
+                tr.classList.toggle('row-focused', !!surname && tr.dataset.surname === surname);
+            });
+        }
+
+        function renderChart() {
+            const history = sim.chartHistory;
+            svg.innerHTML = '';
+            if (history.length === 0) return;
+
+            // Individually-charted surnames: the 20 locked slots plus any
+            // promoted out of "Other" (see maybePromoteOverflow) — same
+            // color-slot indexing (0-19 locked, 20-29 promoted), so slotColor
+            // just reads --series-1..30 by position in this combined list.
+            const slots = (sim.lockedSlots || []).concat(sim.promotedSlots || []);
+            const n = history.length;
+            const xStep = n > 1 ? VIEW_W / (n - 1) : VIEW_W;
+
+            // Build cumulative lower/upper bounds per series (slot order, then Other on top).
+            const seriesCount = slots.length + 1;
+            const cumulative = history.map((frame) => {
+                let acc = 0;
+                const bounds = [];
+                slots.forEach((surname) => {
+                    const lower = acc;
+                    acc += frame.shares[surname] || 0;
+                    bounds.push([lower, acc]);
+                });
+                bounds.push([acc, acc + frame.other]);
+                return bounds;
+            });
+            lastCumulative = cumulative;
+
+            const ns = 'http://www.w3.org/2000/svg';
+            for (let s = 0; s < seriesCount; s++) {
+                const surname = s < slots.length ? slots[s] : null;
+                const isRevealing = !!surname && !!revealingSurnames && revealingSurnames.has(surname);
+                const color = surname ? (isRevealing ? otherColor() : slotColor(sim.colorIndexFor(surname))) : otherColor();
+                let d = '';
+                for (let i = 0; i < n; i++) {
+                    const x = i * xStep;
+                    const yTop = VIEW_H - cumulative[i][s][1] * VIEW_H;
+                    d += (i === 0 ? 'M' : 'L') + x + ',' + yTop + ' ';
+                }
+                for (let i = n - 1; i >= 0; i--) {
+                    const x = i * xStep;
+                    const yBottom = VIEW_H - cumulative[i][s][0] * VIEW_H;
+                    d += 'L' + x + ',' + yBottom + ' ';
+                }
+                d += 'Z';
+                const path = document.createElementNS(ns, 'path');
+                path.setAttribute('d', d);
+                path.setAttribute('fill', color);
+                path.setAttribute('class', 'area');
+                if (s < slots.length) path.dataset.surname = slots[s];
+                svg.appendChild(path);
+            }
+
+            // Century gridlines, so the passing of time is easy to track.
+            // Interpolated between the two nearest frames rather than
+            // requiring an exact frame.year match, since long runs thin out
+            // chartHistory (keeping only every 2nd/4th entry) and an exact
+            // century year can end up dropped from the array.
+            for (let year = CENTURY_YEARS; year <= history[n - 1].year; year += CENTURY_YEARS) {
+                let idx = history.findIndex((f) => f.year >= year);
+                if (idx === -1) continue;
+                let x;
+                if (idx === 0 || history[idx].year === year) {
+                    x = idx * xStep;
+                } else {
+                    const prevYear = history[idx - 1].year;
+                    const frac = (year - prevYear) / (history[idx].year - prevYear);
+                    x = (idx - 1 + frac) * xStep;
+                }
+                const line = document.createElementNS(ns, 'line');
+                line.setAttribute('class', 'century-line');
+                line.setAttribute('x1', x);
+                line.setAttribute('x2', x);
+                line.setAttribute('y1', 0);
+                line.setAttribute('y2', VIEW_H);
+                svg.appendChild(line);
+            }
+
+            // Crosshair (hidden until hover).
+            const crosshair = document.createElementNS(ns, 'line');
+            crosshair.setAttribute('class', 'crosshair');
+            crosshair.setAttribute('id', 'crosshairLine');
+            crosshair.setAttribute('y1', 0);
+            crosshair.setAttribute('y2', VIEW_H);
+            svg.appendChild(crosshair);
+
+            renderHud();
+            renderLegend();
+            applyHighlight(currentHighlight);
+        }
+        // Re-render on language change too — otherwise the HUD/legend/table's
+        // numbers and translated labels (e.g. "Other") keep showing the old
+        // language's formatting until the next simulation tick, which may
+        // never come while paused.
+        onLangChange(() => {
+            renderChart();
+            if (currentView === 'table') renderTable();
+            else if (currentView === 'individual') renderIndividualView();
+        });
+
+        function renderHud() {
+            hudYear.textContent = formatDecimal(sim.year, 0);
+            hudPopulation.textContent = formatDecimal(sim.size, 0);
+        }
+
+        function renderLegend() {
+            legendList.innerHTML = '';
+
+            // Every currently-alive surname gets its own row — no "Other"
+            // lump — sorted highest share first. Only surnames with a real
+            // color slot (the 20 locked ones, plus any promoted out of
+            // "Other" — see Population.prototype.colorIndexFor) are
+            // hoverable to focus their chart band; anyone still in "Other"
+            // shares its muted swatch and is informational only (there's no
+            // individual band to focus). A surname that dies out simply
+            // stops appearing here, rather than showing "Extinct" — that
+            // wording is for the fixed-column table/tooltip views, which
+            // track a stable set of slots.
+            const counts = sim.getSurnameCounts();
+            const total = sim.size || 1;
+
+            const rows = Object.keys(counts)
+                .map((surname) => ({ surname, share: (counts[surname] || 0) / total, colorIdx: sim.colorIndexFor(surname) }))
+                .sort((a, b) => b.share - a.share);
+
+            const leader = rows[0];
+            const remainingKey = rows.length === 1 ? 'legendTitleOne' : 'legendTitleOther';
+            legendTitleEl.textContent = tFmt(remainingKey, { n: rows.length });
+
+            rows.forEach(({ surname, share, colorIdx }) => {
+                const isTracked = colorIdx >= 0;
+                const isRevealing = !!revealingSurnames && revealingSurnames.has(surname);
+                const li = document.createElement('li');
+                const swatch = document.createElement('span');
+                swatch.className = 'legend-swatch';
+                swatch.style.background = isTracked && !isRevealing ? slotColor(colorIdx) : otherColor();
+                const name = document.createElement('span');
+                name.className = 'legend-name';
+                name.textContent = surnameLabel(surname);
+                const pct = document.createElement('span');
+                pct.className = 'legend-pct';
+                pct.textContent = formatPct(share);
+                li.appendChild(swatch);
+                li.appendChild(name);
+                li.appendChild(pct);
+                if (isTracked) {
+                    li.dataset.surname = surname;
+                    li.addEventListener('mouseenter', () => {
+                        currentHighlight = surname;
+                        applyHighlight(surname);
+                        pauseForHover();
+                        // Unlike the SVG/legend/table above (styling toggled
+                        // on existing DOM nodes), the canvas needs an active
+                        // redraw to show the highlight — and since hovering
+                        // just paused ticking, nothing else will trigger one.
+                        if (currentView === 'individual') renderIndividualView();
+                    });
+                    li.addEventListener('mouseleave', () => {
+                        currentHighlight = null;
+                        applyHighlight(null);
+                        resumeFromHover();
+                        if (currentView === 'individual') renderIndividualView();
+                    });
+                }
+                legendList.appendChild(li);
+            });
+
+            leadingNowEl.textContent = leader ? tFmt('leadingNowOne', { surname: surnameLabel(leader.surname) }) : '';
+        }
+
+        svg.addEventListener('mousemove', (event) => {
+            const history = sim.chartHistory;
+            if (history.length === 0) return;
+            const rect = svg.getBoundingClientRect();
+            const relX = (event.clientX - rect.left) / rect.width;
+            const index = Math.max(0, Math.min(history.length - 1, Math.round(relX * (history.length - 1))));
+            const frame = history[index];
+            const slots = (sim.lockedSlots || []).concat(sim.promotedSlots || []);
+            const crosshair = document.getElementById('crosshairLine');
+            if (crosshair) {
+                const x = history.length > 1 ? (index / (history.length - 1)) * VIEW_W : 0;
+                crosshair.setAttribute('x1', x);
+                crosshair.setAttribute('x2', x);
+                crosshair.style.display = 'block';
+            }
+            // Which band is under the cursor — drives both the hover-focus
+            // dimming/pause and which single row the tooltip shows (the
+            // full per-surname breakdown already lives in the info panel;
+            // repeating it all here on every hover was redundant clutter).
+            const bounds = lastCumulative[index];
+            let bandIndex = -1;
+            if (bounds) {
+                const relY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+                const value = 1 - relY;
+                bandIndex = bounds.findIndex(([lower, upper]) => value >= lower && value <= upper);
+            }
+            const hovered = bandIndex >= 0 && bandIndex < slots.length ? slots[bandIndex] : null;
+            currentHighlight = hovered;
+            applyHighlight(hovered);
+            // Hovering a real surname pauses playback (the constant rebuild
+            // made hovering while playing an unwatchable flicker); moving
+            // off it to "Other"/a gap resumes.
+            if (hovered) pauseForHover(); else resumeFromHover();
+
+            let html = '<div><strong>' + t('tableColYear') + ':</strong> ' + formatDecimal(frame.year, 0) + '</div>';
+            html += '<div><strong>' + t('tableColPopulation') + ':</strong> ' + formatDecimal(frame.population, 0) + '</div>';
+            if (bandIndex >= 0) {
+                const isOther = bandIndex === slots.length;
+                const label = isOther ? t('legendOtherLabel') : surnameLabel(slots[bandIndex]);
+                const color = isOther ? otherColor() : slotColor(sim.colorIndexFor(slots[bandIndex]));
+                const share = isOther ? frame.other : (frame.shares[slots[bandIndex]] || 0);
+                html += '<div class="row"><span class="swatch" style="background:' + color + '"></span>' + label + ': ' + formatPct(share) + '</div>';
+            }
+            tooltip.innerHTML = html;
+            tooltip.style.display = 'block';
+            const tw = tooltip.offsetWidth;
+            let left = event.clientX - rect.left + 12;
+            if (left + tw > rect.width) left = event.clientX - rect.left - tw - 12;
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = (event.clientY - rect.top - 10) + 'px';
+        });
+        svg.addEventListener('mouseleave', () => {
+            tooltip.style.display = 'none';
+            const crosshair = document.getElementById('crosshairLine');
+            if (crosshair) crosshair.style.display = 'none';
+            currentHighlight = null;
+            applyHighlight(null);
+            resumeFromHover();
+        });
+
+        // ============================================================
+        // VIEW TOGGLE (chart / table / individual)
+        // ============================================================
+        let currentView = 'chart';
+        const VIEW_ORDER = ['chart', 'individual', 'table'];
+        const VIEW_KEYS = { chart: 'chartViewToggle', table: 'tableViewToggle', individual: 'individualViewToggle' };
+        // Lucide icons (chart-area / sheet / loader) — icon-only buttons,
+        // the i18n labels above are still used as their aria-label.
+        const VIEW_ICONS = {
+            chart: '<path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="M7 11.207a.5.5 0 0 1 .146-.353l2-2a.5.5 0 0 1 .708 0l3.292 3.292a.5.5 0 0 0 .708 0l4.292-4.292a.5.5 0 0 1 .854.353V16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z" />',
+            table: '<rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><line x1="3" x2="21" y1="9" y2="9" /><line x1="3" x2="21" y1="15" y2="15" /><line x1="9" x2="9" y1="9" y2="21" /><line x1="15" x2="15" y1="9" y2="21" />',
+            individual: '<path d="M12 2v4" /><path d="m16.2 7.8 2.9-2.9" /><path d="M18 12h4" /><path d="m16.2 16.2 2.9 2.9" /><path d="M12 18v4" /><path d="m4.9 19.1 2.9-2.9" /><path d="M2 12h4" /><path d="m4.9 4.9 2.9 2.9" />',
+        };
+        const chartSvgWrap = document.getElementById('chartSvgWrap');
+        const chartTable = document.getElementById('chartTable');
+        const chartTableWrap = document.getElementById('chartTableWrap');
+        const individualViewWrap = document.getElementById('individualViewWrap');
+
+        const viewToggleContainer = document.getElementById('viewToggle');
+        function renderViewToggle() {
+            viewToggleContainer.innerHTML = '';
+            VIEW_ORDER.forEach((view) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + VIEW_ICONS[view] + '</svg>';
+                btn.setAttribute('aria-label', t(VIEW_KEYS[view]));
+                btn.setAttribute('aria-pressed', String(view === currentView));
+                btn.addEventListener('click', () => setView(view));
+                viewToggleContainer.appendChild(btn);
+            });
+        }
+        onLangChange(renderViewToggle);
+
+        function setView(view) {
+            currentView = view;
+            chartSvgWrap.style.display = view === 'chart' ? '' : 'none';
+            chartTableWrap.style.display = view === 'table' ? '' : 'none';
+            individualViewWrap.style.display = view === 'individual' ? '' : 'none';
+            renderViewToggle();
+            if (view === 'table') renderTable();
+            else if (view === 'individual') renderIndividualView();
+        }
+
+        const TABLE_MAX_COLUMNS = 10;
+
+        function renderTable() {
+            const history = sim.chartHistory;
+            // Exactly TABLE_MAX_COLUMNS evenly-spaced frames (first and last
+            // always included) — not that many plus an always-appended
+            // final frame, which used to make it 11.
+            let frames;
+            if (history.length <= TABLE_MAX_COLUMNS) {
+                frames = history;
+            } else {
+                const step = (history.length - 1) / (TABLE_MAX_COLUMNS - 1);
+                frames = Array.from({ length: TABLE_MAX_COLUMNS }, (_, i) => history[Math.round(i * step)]);
+            }
+
+            // Transposed: surnames as rows, sampled years as columns — and
+            // every surname that was ever alive in a sampled year gets its
+            // own row (no "Other" lump), sorted by its most recent share,
+            // then by its peak share as a tiebreak for ones already extinct.
+            const surnameSet = new Set();
+            frames.forEach((frame) => {
+                Object.keys(frame.shares).forEach((s) => { if (frame.shares[s] > 0) surnameSet.add(s); });
+            });
+            const lastFrame = frames[frames.length - 1];
+            const surnames = [...surnameSet].sort((a, b) => {
+                const lastA = (lastFrame.shares[a] || 0);
+                const lastB = (lastFrame.shares[b] || 0);
+                if (lastB !== lastA) return lastB - lastA;
+                const maxA = Math.max(...frames.map((f) => f.shares[a] || 0));
+                const maxB = Math.max(...frames.map((f) => f.shares[b] || 0));
+                return maxB - maxA;
+            });
+
+            let html = '<thead><tr><th>' + t('tableColYear') + '</th>';
+            frames.forEach((frame) => { html += '<th>' + formatDecimal(frame.year, 0) + '</th>'; });
+            html += '</tr></thead><tbody>';
+            html += '<tr class="population-row"><th>' + t('tableColPopulation') + '</th>';
+            frames.forEach((frame) => { html += '<td>' + formatDecimal(frame.population, 0) + '</td>'; });
+            html += '</tr>';
+            surnames.forEach((surname, i) => {
+                html += '<tr data-surname="' + surname + '"' + (i % 2 === 1 ? ' class="row-odd"' : '') + '><th>' + surnameLabel(surname) + '</th>';
+                frames.forEach((frame) => { html += '<td>' + formatPct(frame.shares[surname] || 0) + '</td>'; });
+                html += '</tr>';
+            });
+            html += '</tbody>';
+            chartTable.innerHTML = html;
+        }
+
+        // ============================================================
+        // INDIVIDUAL VIEW — one dot per living person, drawn on a canvas
+        // (not SVG/DOM nodes — up to ~40,000 individuals redrawn every
+        // tick would be a lot of DOM churn; a full canvas clear+redraw at
+        // that scale is cheap). Same-surname dots cluster into a shared
+        // rectangular region sized by population share (a squarified
+        // treemap — a naive slice/dice treemap produces bad sliver shapes
+        // with ~150-200 surnames of wildly different sizes).
+        // ============================================================
+        const individualCanvas = document.getElementById('individualCanvas');
+        const ictx = individualCanvas.getContext('2d');
+        const individualTooltip = document.getElementById('individualTooltip');
+
+        // Squarified treemap (Bruls/Huizing/van Wijk). items: [{key, value}]
+        // with value > 0. Returns [{key, x, y, width, height}] in pixels.
+        function computeTreemap(items, x, y, width, height) {
+            const sorted = items.filter((it) => it.value > 0).slice().sort((a, b) => b.value - a.value);
+            const total = sorted.reduce((s, it) => s + it.value, 0);
+            if (total <= 0 || width <= 0 || height <= 0) return [];
+            // Convert shares to actual pixel-area units up front so the
+            // aspect-ratio math below works in real area units throughout.
+            const scaled = sorted.map((it) => ({ key: it.key, area: (it.value / total) * width * height }));
+            const rects = [];
+            squarify(scaled, [], Math.min(width, height), { x, y, width, height }, rects);
+            return rects;
+        }
+
+        // Worst (largest) aspect ratio if `row` were laid out as a strip of
+        // length `side` — the paper's closed-form shortcut: only the row's
+        // min/max area matter, no need to try every candidate ratio.
+        function worstRatio(row, side) {
+            if (row.length === 0) return Infinity;
+            let sum = 0, max = -Infinity, min = Infinity;
+            row.forEach((it) => {
+                sum += it.area;
+                if (it.area > max) max = it.area;
+                if (it.area < min) min = it.area;
+            });
+            const side2 = side * side, sum2 = sum * sum;
+            return Math.max((side2 * max) / sum2, sum2 / (side2 * min));
+        }
+
+        // remaining: items left to place (sorted descending by area).
+        // row: items accumulated for the row currently being grown.
+        // side: length of the rect's shorter side (fixed while filling the row).
+        // rect: {x, y, width, height} of the still-free space.
+        function squarify(remaining, row, side, rect, rects) {
+            if (remaining.length === 0) {
+                if (row.length > 0) placeRow(row, rect, rects, true);
+                return;
+            }
+            const next = remaining[0];
+            const newRow = row.concat([next]);
+            if (row.length === 0 || worstRatio(newRow, side) <= worstRatio(row, side)) {
+                // Adding `next` doesn't worsen the row's aspect ratio yet — keep growing it.
+                squarify(remaining.slice(1), newRow, side, rect, rects);
+            } else {
+                // Adding `next` would worsen it — freeze+place the current row,
+                // then start a fresh row against the shrunk remaining rectangle.
+                const shrunk = placeRow(row, rect, rects, false);
+                squarify(remaining, [], Math.min(shrunk.width, shrunk.height), shrunk, rects);
+            }
+        }
+
+        // Lays `row` out as a strip against the rect's shorter side, pushes
+        // one {key,x,y,width,height} per item into `rects`, and returns the
+        // leftover rectangle (or null when consumeAll — the final row).
+        function placeRow(row, rect, rects, consumeAll) {
+            const rowSum = row.reduce((s, it) => s + it.area, 0);
+            const { x, y, width, height } = rect;
+            if (width >= height) {
+                const stripWidth = rowSum / height;
+                let cy = y;
+                row.forEach((it) => {
+                    const h = it.area / stripWidth;
+                    rects.push({ key: it.key, x, y: cy, width: stripWidth, height: h });
+                    cy += h;
+                });
+                return consumeAll ? null : { x: x + stripWidth, y, width: width - stripWidth, height };
+            }
+            const stripHeight = rowSum / width;
+            let cx = x;
+            row.forEach((it) => {
+                const w = it.area / stripHeight;
+                rects.push({ key: it.key, x: cx, y, width: w, height: stripHeight });
+                cx += w;
+            });
+            return consumeAll ? null : { x, y: y + stripHeight, width, height: height - stripHeight };
+        }
+
+        const DOT_RADIUS = 2;
+        // Marks the center of a surname that used to have its own cluster
+        // but has since died out completely — see the extinct-marker loop
+        // in renderIndividualView() and its hover hit-test below.
+        const EXTINCT_MARKER_RADIUS = 2;
+
+        // Fixed per-surname cluster centers/sizes, computed once per
+        // simulation run (see renderIndividualView) rather than every tick —
+        // recomputing (and re-flowing every dot into a freshly recomputed
+        // rectangle) every tick made positions flicker/teleport constantly.
+        // { [surname]: { cx, cy, baseRadius, baseCount } }, or null before
+        // the first render of a run.
+        let clusterAnchors = null;
+
+        // Draws one surname's currently-alive people, each at a position
+        // derived from their own permanent (dotAngle, dotRadiusFrac) —
+        // assigned once at birth, see Person() — scaled by this surname's
+        // *current* cluster radius. Since a surname's living count only
+        // ever changes gradually tick to tick, this position drifts
+        // smoothly with zero explicit animation/interpolation code, and
+        // every person keeps roughly the same place in their cluster for
+        // life instead of reshuffling every redraw. Batched into a single
+        // fill() call per surname (canvas 2D's per-call overhead dominates
+        // at this scale, not per-primitive cost).
+        // sqrt(count/baseCount): area (not radius) scales with population,
+        // so a 4x bigger surname gets 2x the radius, not 4x. Clamped so a
+        // surname that started as a tiny sliver and later dominates can't
+        // push its dots off the edge of the canvas. Shared by drawCluster
+        // (drawing) and the canvas hover hit-test below, so they can never
+        // disagree about where a cluster's boundary actually is.
+        function clusterRadiusFor(anchor, count, cssW, cssH) {
+            return Math.min(anchor.baseRadius * Math.sqrt(count / anchor.baseCount), Math.min(cssW, cssH) / 2);
+        }
+
+        // `alpha` mirrors applyHighlight()'s chart dimming (1 = normal,
+        // 0.2 = dimmed because some other surname is hovered).
+        function drawCluster(ctx, people, anchor, color, cssW, cssH, alpha) {
+            const count = people.length;
+            if (count <= 0) return;
+            const currentRadius = clusterRadiusFor(anchor, count, cssW, cssH);
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            people.forEach((p) => {
+                // The radius clamp above only bounds the cluster's size, not
+                // its position — an anchor seeded near a canvas corner (as
+                // small starting surnames often are) can still push dots
+                // past the edge once its radius grows, so also clamp the
+                // final coordinates to stay on-canvas.
+                const x = Math.max(0, Math.min(cssW, anchor.cx + Math.cos(p.dotAngle) * p.dotRadiusFrac * currentRadius));
+                const y = Math.max(0, Math.min(cssH, anchor.cy + Math.sin(p.dotAngle) * p.dotRadiusFrac * currentRadius));
+                ctx.moveTo(x + DOT_RADIUS, y); // moveTo (not lineTo) avoids connecting slivers between dots
+                ctx.arc(x, y, DOT_RADIUS, 0, Math.PI * 2);
+            });
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+
+        // devicePixelRatio-aware canvas sizing. Assigning canvas.width/height
+        // clears the canvas and resets ctx's transform to identity, so only
+        // touching it when the CSS size or DPR actually changed keeps
+        // ctx.scale() from ever compounding across repeated calls.
+        let lastCanvasCssW = 0, lastCanvasCssH = 0, lastCanvasDpr = 0;
+        function sizeIndividualCanvas() {
+            const cssW = individualCanvas.clientWidth, cssH = individualCanvas.clientHeight;
+            if (cssW === 0 || cssH === 0) return false; // hidden (display:none) — nothing to size yet
+            const dpr = window.devicePixelRatio || 1;
+            if (cssW === lastCanvasCssW && cssH === lastCanvasCssH && dpr === lastCanvasDpr) return true;
+            individualCanvas.width = Math.round(cssW * dpr);
+            individualCanvas.height = Math.round(cssH * dpr);
+            ictx.scale(dpr, dpr);
+            lastCanvasCssW = cssW; lastCanvasCssH = cssH; lastCanvasDpr = dpr;
+            return true;
+        }
+
+        // A canvas bitmap doesn't reflow like the chart's SVG viewBox does —
+        // redraw on resize while this view is active so it doesn't look
+        // stretched/blurry until the next tick. clusterAnchors are in
+        // absolute pixel coordinates for the canvas size at seed time, so a
+        // resize reseeds them rather than leaving them mis-scaled.
+        new ResizeObserver(() => {
+            if (currentView === 'individual') {
+                clusterAnchors = null;
+                renderIndividualView();
+            }
+        }).observe(individualViewWrap);
+
+        function renderIndividualView() {
+            if (!sizeIndividualCanvas()) return;
+            const cssW = individualCanvas.clientWidth, cssH = individualCanvas.clientHeight;
+            ictx.clearRect(0, 0, cssW, cssH); // logical (CSS-pixel) coords — ctx is already dpr-scaled
+            const peopleBySurname = {};
+            sim.people.forEach((p) => {
+                (peopleBySurname[p.surname] || (peopleBySurname[p.surname] = [])).push(p);
+            });
+            if (Object.keys(peopleBySurname).length === 0) return;
+
+            if (!clusterAnchors) {
+                const items = Object.keys(peopleBySurname).map((surname) => ({ key: surname, value: peopleBySurname[surname].length }));
+                const rects = computeTreemap(items, 0, 0, cssW, cssH);
+                clusterAnchors = {};
+                rects.forEach((rect) => {
+                    clusterAnchors[rect.key] = {
+                        cx: rect.x + rect.width / 2,
+                        cy: rect.y + rect.height / 2,
+                        baseRadius: Math.sqrt((rect.width * rect.height) / Math.PI),
+                        baseCount: peopleBySurname[rect.key].length,
+                    };
+                });
+            }
+
+            Object.keys(peopleBySurname).forEach((surname) => {
+                const anchor = clusterAnchors[surname];
+                if (!anchor) return; // a surname born after the anchors were seeded can't happen (see plan notes) — skip defensively
+                const colorIdx = sim.colorIndexFor(surname);
+                const targetColor = colorIdx >= 0 ? slotColor(colorIdx) : otherColor();
+                // Mirrors the chart/legend's gray-to-color reveal for
+                // surnames just promoted out of "Other" (see
+                // startPromotionReveal) — canvas has no CSS transition to
+                // lean on, so the fade is done by hand via lerpColor(),
+                // driven every frame by animatePromotionRevealIfNeeded().
+                const color = revealingSurnames && revealingSurnames.has(surname)
+                    ? lerpColor(otherColor(), targetColor, promotionRevealProgress())
+                    : targetColor;
+                // Mirrors applyHighlight()'s chart-band dimming (0.2) so
+                // hovering a surname in the legend focuses its cluster here
+                // too, not just the chart/table.
+                const alpha = currentHighlight ? (surname === currentHighlight ? 1 : 0.2) : 1;
+                drawCluster(ictx, peopleBySurname[surname], anchor, color, cssW, cssH, alpha);
+            });
+
+            // Leave a small marker at every extinct surname's old cluster
+            // center — a surname can only ever go extinct, never come
+            // back (see maybePromoteOverflow's comment elsewhere), so once
+            // a spot goes quiet it stays that way, and the marker is a
+            // permanent little memorial rather than something that needs
+            // to be cleaned up later.
+            Object.keys(clusterAnchors).forEach((surname) => {
+                if (peopleBySurname[surname]) return; // still alive — drawn above
+                const anchor = clusterAnchors[surname];
+                const colorIdx = sim.colorIndexFor(surname);
+                const color = colorIdx >= 0 ? slotColor(colorIdx) : otherColor();
+                const alpha = currentHighlight ? (surname === currentHighlight ? 1 : 0.2) : 1;
+                ictx.globalAlpha = alpha;
+                ictx.fillStyle = color;
+                ictx.beginPath();
+                ictx.arc(anchor.cx, anchor.cy, EXTINCT_MARKER_RADIUS, 0, Math.PI * 2);
+                ictx.fill();
+                ictx.globalAlpha = 1;
+            });
+        }
+
+        // Same hover-to-focus behavior as the chart's own mousemove handler
+        // (see svg.addEventListener('mousemove', ...) above): dim every
+        // other surname, pause playback, and show a tooltip. Hit-testing is
+        // done against each cluster's disk (cheap — one check per surname,
+        // not per dot) rather than per-dot, since "which surname" is all
+        // that's needed; ties (overlapping clusters, see drawCluster's
+        // comment on the coordinate clamp) go to whichever cluster the
+        // cursor is proportionally closest to its own center.
+        individualCanvas.addEventListener('mousemove', (event) => {
+            if (!clusterAnchors) return;
+            const rect = individualCanvas.getBoundingClientRect();
+            const mx = event.clientX - rect.left;
+            const my = event.clientY - rect.top;
+            const counts = sim.getSurnameCounts();
+            let hovered = null;
+            let bestRatio = 1; // must be inside the disk (ratio <= 1) to count at all
+            Object.keys(clusterAnchors).forEach((surname) => {
+                const count = counts[surname] || 0;
+                if (count <= 0) return;
+                const anchor = clusterAnchors[surname];
+                const radius = clusterRadiusFor(anchor, count, rect.width, rect.height);
+                if (radius <= 0) return;
+                const dx = mx - anchor.cx, dy = my - anchor.cy;
+                const ratio = Math.sqrt(dx * dx + dy * dy) / radius;
+                if (ratio <= bestRatio) { bestRatio = ratio; hovered = surname; }
+            });
+            // No living cluster under the cursor — check extinct markers
+            // too (small, so only a tight radius counts as a hit).
+            if (!hovered) {
+                let bestDist = EXTINCT_MARKER_RADIUS;
+                Object.keys(clusterAnchors).forEach((surname) => {
+                    if ((counts[surname] || 0) > 0) return;
+                    const anchor = clusterAnchors[surname];
+                    const dx = mx - anchor.cx, dy = my - anchor.cy;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist <= bestDist) { bestDist = dist; hovered = surname; }
+                });
+            }
+            currentHighlight = hovered;
+            applyHighlight(hovered);
+            if (hovered) pauseForHover(); else resumeFromHover();
+            renderIndividualView(); // reflect the highlight now — ticking may be paused, so nothing else will
+
+            if (hovered) {
+                const colorIdx = sim.colorIndexFor(hovered);
+                const color = colorIdx >= 0 ? slotColor(colorIdx) : otherColor();
+                const share = (counts[hovered] || 0) / (sim.size || 1);
+                let html = '<div class="row"><span class="swatch" style="background:' + color + '"></span>' + surnameLabel(hovered) + ': ' + formatPct(share) + '</div>';
+                // Extinct surnames get a second line showing the highest
+                // share they ever reached, since "Extinct" alone loses that
+                // history — see Population.prototype.recordChartFrame's
+                // running maxShare tracker.
+                if (share === 0) {
+                    html += '<div><strong>' + t('maxDiffusionLabel') + ':</strong> ' + formatPct(sim.maxShare[hovered] || 0) + '</div>';
+                }
+                individualTooltip.innerHTML = html;
+                individualTooltip.style.display = 'block';
+                const tw = individualTooltip.offsetWidth;
+                let left = mx + 12;
+                if (left + tw > rect.width) left = mx - tw - 12;
+                individualTooltip.style.left = left + 'px';
+                individualTooltip.style.top = (my - 10) + 'px';
+            } else {
+                individualTooltip.style.display = 'none';
+            }
+        });
+        individualCanvas.addEventListener('mouseleave', () => {
+            individualTooltip.style.display = 'none';
+            currentHighlight = null;
+            applyHighlight(null);
+            resumeFromHover();
+            renderIndividualView();
+        });
+
+        // ============================================================
+        // CONTROLS: play/pause/reset/speed
+        // ============================================================
+        const SPEED_PRESETS = {
+            slow: { yearsPerTick: 1, intervalMs: 200 },
+            normal: { yearsPerTick: 1, intervalMs: 60 },
+            fast: { yearsPerTick: 4, intervalMs: 60 },
+            turbo: { yearsPerTick: 20, intervalMs: 60 },
+        };
+        const SPEED_KEYS = { slow: 'speedSlow', normal: 'speedNormal', fast: 'speedFast', turbo: 'speedTurbo' };
+        let currentSpeed = 'normal';
+        let timer = null;
+        let playing = false;
+
+        // True only when playback was auto-paused by hovering a surname
+        // (not a manual pause) — so un-hovering resumes it, but a genuine
+        // manual pause held during a hover stays paused on un-hover.
+        let hoverPaused = false;
+        function pauseForHover() {
+            if (!playing) return;
+            playing = false;
+            hoverPaused = true;
+            stopTimer();
+            renderPlayPauseBtn();
+        }
+        function resumeFromHover() {
+            if (!hoverPaused) return;
+            hoverPaused = false;
+            playing = true;
+            renderPlayPauseBtn();
+            startTimer();
+        }
+
+        const speedToggleContainer = document.getElementById('speedToggle');
+        function renderSpeedToggle() {
+            speedToggleContainer.innerHTML = '';
+            Object.keys(SPEED_PRESETS).forEach((key) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = t(SPEED_KEYS[key]);
+                btn.setAttribute('aria-pressed', String(key === currentSpeed));
+                btn.addEventListener('click', () => {
+                    currentSpeed = key;
+                    renderSpeedToggle();
+                    if (playing) { stopTimer(); startTimer(); }
+                });
+                speedToggleContainer.appendChild(btn);
+            });
+        }
+        onLangChange(renderSpeedToggle);
+
+        const ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" /></svg>';
+        const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><rect x="14" y="3" width="5" height="18" rx="1" /><rect x="5" y="3" width="5" height="18" rx="1" /></svg>';
+
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        function renderPlayPauseBtn() {
+            playPauseBtn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
+            playPauseBtn.setAttribute('aria-label', t(playing ? 'controlPause' : 'controlPlay'));
+        }
+        onLangChange(renderPlayPauseBtn);
+
+        function tick() {
+            if (sim.ended) return;
+            const preset = SPEED_PRESETS[currentSpeed];
+            for (let i = 0; i < preset.yearsPerTick; i++) {
+                sim.passYear();
+                sim.birthControl((reasonKey) => showCullToast(reasonKey));
+                const outcome = sim.checkEnd();
+                if (outcome && outcome.type === 'dominance') {
+                    showDominanceBanner(outcome.surname);
+                    stopTimer();
+                    playing = false;
+                    renderPlayPauseBtn();
+                    break;
+                } else if (outcome && outcome.type === 'overflow') {
+                    // Set now (not just when "Continue" is clicked) so the
+                    // renderChart()/renderLegend() call at the bottom of
+                    // this function already paints the promoted surnames
+                    // gray — otherwise the legend (which, unlike the chart,
+                    // isn't covered by the banner) would flash their real
+                    // color immediately, then snap back to gray once the
+                    // reveal starts, then fade back in.
+                    revealingSurnames = new Set(sim.promotedSlots);
+                    showOverflowBanner(outcome.n);
+                    stopTimer();
+                    playing = false;
+                    renderPlayPauseBtn();
+                    break;
+                } else if (outcome && outcome.type === 'stability') {
+                    showStabilityBanner(outcome.n);
+                    stopTimer();
+                    playing = false;
+                    renderPlayPauseBtn();
+                    break;
+                }
+            }
+            renderChart();
+            if (currentView === 'table') renderTable();
+            else if (currentView === 'individual') renderIndividualView();
+        }
+
+        function startTimer() {
+            // Never actually tick while a promotion reveal is mid-countdown
+            // (revealingSurnames set and promotionRevealStartTime already
+            // ticking, i.e. "Continue" was clicked and the 5s gray-to-color
+            // fade is playing) — a tick's renderChart()/renderIndividualView
+            // rebuild would tear out the fading DOM nodes/canvas state and
+            // repaint them gray again, since revealingSurnames isn't cleared
+            // until the reveal actually finishes. This one guard covers
+            // every caller (hover resume, speed change, the play button,
+            // etc.) — whichever of them sets `playing = true` during the
+            // reveal, startPromotionReveal()'s own completion timeout calls
+            // startTimer() again once revealingSurnames is really null, and
+            // this passes through then.
+            if (revealingSurnames && promotionRevealStartTime !== null) return;
+            const preset = SPEED_PRESETS[currentSpeed];
+            timer = setInterval(tick, preset.intervalMs);
+        }
+        function stopTimer() {
+            if (timer) clearInterval(timer);
+            timer = null;
+        }
+
+        playPauseBtn.addEventListener('click', () => {
+            hoverPaused = false;
+            playing = !playing;
+            renderPlayPauseBtn();
+            if (playing) startTimer(); else stopTimer();
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', resetSimulation);
+        document.getElementById('dominanceResetBtn').addEventListener('click', resetSimulation);
+
+        document.getElementById('stabilityContinueBtn').addEventListener('click', () => {
+            document.getElementById('stabilityBanner').classList.remove('visible');
+            playing = true;
+            renderPlayPauseBtn();
+            startTimer();
+        });
+        document.getElementById('stabilityStopBtn').addEventListener('click', () => {
+            document.getElementById('stabilityBanner').classList.remove('visible');
+        });
+
+        document.getElementById('overflowContinueBtn').addEventListener('click', () => {
+            document.getElementById('overflowBanner').classList.remove('visible');
+            playing = true;
+            renderPlayPauseBtn();
+            startPromotionReveal();
+        });
+
+        function showDominanceBanner(surname) {
+            document.getElementById('dominanceBannerBody').textContent = tFmt('dominanceBannerBody', { surname: surnameLabel(surname) });
+            document.getElementById('dominanceBanner').classList.add('visible');
+        }
+
+        function showStabilityBanner(n) {
+            const key = n === 1 ? 'stabilityBannerBodyOne' : 'stabilityBannerBodyOther';
+            document.getElementById('stabilityBannerBody').textContent = tFmt(key, { n });
+            document.getElementById('stabilityBanner').classList.add('visible');
+        }
+
+        function showOverflowBanner(n) {
+            document.getElementById('overflowBannerTitle').textContent = tFmt('overflowBannerTitle', { n });
+            document.getElementById('overflowBanner').classList.add('visible');
+        }
+
+        // Reveals newly-promoted surnames by fading them from their old
+        // "Other" gray to their real color over PROMOTION_REVEAL_MS, so the
+        // user sees the chart/legend looking unchanged at first (they've
+        // been painted gray ever since the promotion happened — see the
+        // 'overflow' branch in tick() above, which sets revealingSurnames
+        // before its own trailing renderChart() call), then watches the new
+        // colors emerge once they dismiss the banner — rather than an
+        // instant snap. We flip fill/background directly on the existing
+        // (already-gray) DOM nodes rather than re-rendering first, which is
+        // what lets the CSS `transition: fill/background-color` animate the
+        // fade instead of just snapping (a freshly (re)created element has
+        // no prior value to transition from). Ticking is deliberately
+        // delayed until the reveal finishes so no renderChart() rebuild
+        // tears out the mid-fade elements.
+        const PROMOTION_REVEAL_MS = 5000;
+        let promotionRevealTimer = null;
+        // When the 5s countdown actually starts (Continue clicked) — null
+        // before then and after it finishes. Individual view has no CSS
+        // transition to lean on like the chart/legend DOM nodes do, so it
+        // needs this timestamp to compute its own color-interpolation
+        // progress every animation frame — see promotionRevealProgress().
+        let promotionRevealStartTime = null;
+        let promotionRevealRafId = null;
+
+        function promotionRevealProgress() {
+            if (!revealingSurnames || promotionRevealStartTime === null) return 0;
+            return Math.min(1, (performance.now() - promotionRevealStartTime) / PROMOTION_REVEAL_MS);
+        }
+
+        function hexToRgb(hex) {
+            const h = hex.trim().replace('#', '');
+            const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+            const n = parseInt(full, 16);
+            return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+        }
+
+        function lerpColor(hexA, hexB, t) {
+            const a = hexToRgb(hexA), b = hexToRgb(hexB);
+            const r = Math.round(a.r + (b.r - a.r) * t);
+            const g = Math.round(a.g + (b.g - a.g) * t);
+            const bl = Math.round(a.b + (b.b - a.b) * t);
+            return 'rgb(' + r + ', ' + g + ', ' + bl + ')';
+        }
+
+        // Keeps Individual view's canvas repainting every frame for the
+        // duration of the reveal, since (unlike the chart/legend's CSS
+        // transition) nothing redraws it automatically. Cheap to call
+        // repeatedly — it's a no-op once already running, and it stops
+        // itself once the reveal completes.
+        function animatePromotionRevealIfNeeded() {
+            if (promotionRevealRafId !== null) return;
+            const step = () => {
+                if (!revealingSurnames || promotionRevealStartTime === null) { promotionRevealRafId = null; return; }
+                if (currentView === 'individual') renderIndividualView();
+                if (promotionRevealProgress() >= 1) { promotionRevealRafId = null; return; }
+                promotionRevealRafId = requestAnimationFrame(step);
+            };
+            promotionRevealRafId = requestAnimationFrame(step);
+        }
+
+        function startPromotionReveal() {
+            if (!sim.promotedSlots || sim.promotedSlots.length === 0) { startTimer(); return; }
+            revealingSurnames = new Set(sim.promotedSlots);
+            // Force a layout flush so the browser commits to the gray
+            // fill/background already painted before we flip to the real
+            // color below — with no reflow in between, both states could
+            // get coalesced into a single paint and the CSS transition
+            // would have nothing to interpolate from (it'd just snap
+            // straight to the end color).
+            void svg.offsetWidth;
+            svg.querySelectorAll('path[data-surname]').forEach((path) => {
+                if (revealingSurnames.has(path.dataset.surname)) {
+                    path.setAttribute('fill', slotColor(sim.colorIndexFor(path.dataset.surname)));
+                }
+            });
+            legendList.querySelectorAll('li[data-surname]').forEach((li) => {
+                if (revealingSurnames.has(li.dataset.surname)) {
+                    const swatch = li.querySelector('.legend-swatch');
+                    if (swatch) swatch.style.background = slotColor(sim.colorIndexFor(li.dataset.surname));
+                }
+            });
+            promotionRevealStartTime = performance.now();
+            animatePromotionRevealIfNeeded();
+            clearTimeout(promotionRevealTimer);
+            promotionRevealTimer = setTimeout(() => {
+                promotionRevealTimer = null;
+                revealingSurnames = null;
+                promotionRevealStartTime = null;
+                stopTimer();
+                if (playing) startTimer();
+            }, PROMOTION_REVEAL_MS);
+        }
+
+        let cullToastTimer = null;
+        function showCullToast(reasonKey) {
+            const toast = document.getElementById('cullToast');
+            toast.textContent = tFmt('cullToastText', { reason: t(reasonKey) });
+            toast.classList.add('visible');
+            clearTimeout(cullToastTimer);
+            cullToastTimer = setTimeout(() => toast.classList.remove('visible'), 3500);
+        }
+
+        // ============================================================
+        // BOOTSTRAP
+        // ============================================================
+        let sim = new Population(INITIAL_POPULATION);
+
+        function resetSimulation() {
+            stopTimer();
+            playing = false;
+            hoverPaused = false;
+            renderPlayPauseBtn();
+            document.getElementById('dominanceBanner').classList.remove('visible');
+            document.getElementById('stabilityBanner').classList.remove('visible');
+            document.getElementById('overflowBanner').classList.remove('visible');
+            clearTimeout(promotionRevealTimer);
+            promotionRevealTimer = null;
+            revealingSurnames = null;
+            promotionRevealStartTime = null;
+            if (promotionRevealRafId !== null) { cancelAnimationFrame(promotionRevealRafId); promotionRevealRafId = null; }
+            clusterAnchors = null;
+            tooltip.style.display = 'none';
+            sim = new Population(INITIAL_POPULATION);
+            sim.generate(currentDataset);
+            sim.shuffle();
+            sim.recordChartFrame();
+            renderChart();
+            if (currentView === 'table') renderTable();
+            else if (currentView === 'individual') renderIndividualView();
+            playing = true;
+            renderPlayPauseBtn();
+            startTimer();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.documentElement.lang = currentLang;
+            applyStaticDict();
+            renderLangToggle();
+            renderDatasetToggle();
+            renderSpeedToggle();
+            renderViewToggle();
+            renderPlayPauseBtn();
+            resetSimulation();
+
+            // Detail panel height sync — reused verbatim from flags/index.html,
+            // renaming mapPanel -> chartPanel for this app's layout.
+            const chartPanel = document.querySelector('.chart-panel');
+            const detailPanel = document.querySelector('.detail-panel');
+            function syncDetailPanelHeight() {
+                const twoColumn = window.matchMedia('(min-width: 861px)').matches;
+                detailPanel.style.height = twoColumn ? chartPanel.offsetHeight + 'px' : '';
+            }
+            new ResizeObserver(syncDetailPanelHeight).observe(chartPanel);
+            window.addEventListener('resize', syncDetailPanelHeight);
+            syncDetailPanelHeight();
+        });
